@@ -1,0 +1,516 @@
+# Rules in this file were initially inferred by Visual Studio IntelliCode from the E:\Projects\Priem.Psy.User.REST.Api\src\Priem.Psy.User.REST.Api\ codebase based on best match to current usage at 20-Apr-22
+# You can modify the rules from these initially generated values to suit your own policies
+# You can learn more about editorconfig here: https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference
+[*.cs]
+
+# max length size
+guidelines = 140
+guidelines_style = 1px dotted BEBEBE
+
+#Core editorconfig formatting - indentation
+
+#use soft tabs (spaces) for indentation
+indent_style = space
+indent_size = 4
+
+#Formatting - new line options
+
+#place catch statements on a new line
+csharp_new_line_before_catch = true
+#require finally statements to be on a new line after the closing brace
+csharp_new_line_before_finally = true
+#require members of object intializers to be on separate lines
+csharp_new_line_before_members_in_object_initializers = true
+#require braces to be on a new line for control_blocks, types, lambdas, and methods (also known as "Allman" style)
+csharp_new_line_before_open_brace = control_blocks, types, lambdas, methods
+
+#Formatting - spacing options
+
+#require a space after a keyword in a control flow statement such as a for loop
+csharp_space_after_keywords_in_control_flow_statements = true
+#remove space within empty argument list parentheses
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+#remove space between method call name and opening parenthesis
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+#do not place space characters after the opening parenthesis and before the closing parenthesis of a method call
+csharp_space_between_method_call_parameter_list_parentheses = false
+#place a space character after the opening parenthesis and before the closing parenthesis of a method declaration parameter list.
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+
+#Style - Code block preferences
+
+#prefer no curly braces if allowed
+csharp_prefer_braces = false:suggestion
+
+#Style - expression bodied member options
+
+#prefer block bodies for constructors
+csharp_style_expression_bodied_constructors = false:suggestion
+#prefer block bodies for methods
+csharp_style_expression_bodied_methods = false:suggestion
+
+#Style - expression level options
+
+#prefer the language keyword for member access expressions, instead of the type name, for types that have a keyword to represent them
+dotnet_style_predefined_type_for_member_access = true:suggestion
+
+#Style - Expression-level  preferences
+
+#prefer objects to be initialized using object initializers when possible
+dotnet_style_object_initializer = true:suggestion
+
+#Style - implicit and explicit types
+
+#prefer var over explicit type in all cases, unless overridden by another code style rule
+csharp_style_var_elsewhere = false:none
+#prefer var is used to declare variables with built-in system types such as int
+csharp_style_var_for_built_in_types = false:none
+#prefer var when the type is already mentioned on the right-hand side of a declaration expression
+csharp_style_var_when_type_is_apparent = false:none
+
+#Style - language keyword and framework type options
+
+#prefer the language keyword for local variables, method parameters, and class members, instead of the type name, for types that have a keyword to represent them
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+
+#Style - modifier options
+
+#prefer accessibility modifiers to be declared except for public interface members. This will currently not differ from always and will act as future proofing for if C# adds default interface methods.
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
+
+#Style - Modifier preferences
+
+#when this rule is set to a list of modifiers, prefer the specified ordering.
+csharp_preferred_modifier_order = public,private,async,static,readonly:suggestion
+
+#Style - qualification options
+
+#prefer fields not to be prefaced with this. or Me. in Visual Basic
+dotnet_style_qualification_for_field = false:suggestion
+csharp_indent_labels = one_less_than_current
+csharp_space_around_binary_operators = before_and_after
+csharp_using_directive_placement = outside_namespace:silent
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_namespace_declarations = block_scoped:silent
+csharp_style_expression_bodied_operators = false:silent
+csharp_style_expression_bodied_properties = true:silent
+csharp_style_expression_bodied_indexers = true:silent
+csharp_style_expression_bodied_accessors = true:silent
+csharp_style_expression_bodied_lambdas = true:silent
+csharp_style_expression_bodied_local_functions = false:silent
+csharp_style_throw_expression = true:suggestion
+csharp_style_prefer_null_check_over_type_check = true:suggestion
+csharp_prefer_simple_default_expression = true:suggestion
+csharp_style_prefer_local_over_anonymous_function = true:suggestion
+csharp_style_prefer_index_operator = true:suggestion
+csharp_style_prefer_range_operator = true:suggestion
+csharp_style_implicit_object_creation_when_type_is_apparent = true:suggestion
+csharp_style_prefer_tuple_swap = true:suggestion
+csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_deconstructed_variable_declaration = true:suggestion
+csharp_style_unused_value_assignment_preference = discard_variable:suggestion
+csharp_style_unused_value_expression_statement_preference = discard_variable:silent
+csharp_prefer_static_local_function = true:suggestion
+csharp_style_allow_embedded_statements_on_same_line_experimental = true:silent
+csharp_style_allow_blank_lines_between_consecutive_braces_experimental = true:silent
+csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = true:silent
+csharp_style_conditional_delegate_call = true:suggestion
+csharp_style_prefer_switch_expression = true:suggestion
+csharp_style_prefer_pattern_matching = true:silent
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+csharp_style_prefer_not_pattern = true:suggestion
+csharp_style_prefer_extended_property_pattern = true:suggestion
+
+[*.{cs,vb}]
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+tab_width = 4
+indent_size = 4
+end_of_line = crlf
+dotnet_style_coalesce_expression = true:suggestion
+dotnet_style_null_propagation = true:suggestion
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
+dotnet_style_prefer_auto_properties = true:silent
+dotnet_style_object_initializer = true:suggestion
+dotnet_style_collection_initializer = true:suggestion
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:silent
+dotnet_style_prefer_conditional_expression_over_return = true:silent
+dotnet_style_explicit_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_tuple_names = true:suggestion
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:suggestion
+dotnet_style_prefer_compound_assignment = true:suggestion
+dotnet_style_prefer_simplified_interpolation = true:suggestion
+dotnet_style_namespace_match_folder = true:suggestion
+[*.{cs,vb}]
+#### Naming styles ####
+
+# Naming rules
+
+dotnet_naming_rule.interface_should_be_begins_with_i.severity = suggestion
+dotnet_naming_rule.interface_should_be_begins_with_i.symbols = interface
+dotnet_naming_rule.interface_should_be_begins_with_i.style = begins_with_i
+
+dotnet_naming_rule.types_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.types_should_be_pascal_case.symbols = types
+dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
+
+dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
+dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
+
+# Symbol specifications
+
+dotnet_naming_symbols.interface.applicable_kinds = interface
+dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.interface.required_modifiers = 
+
+dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
+dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.types.required_modifiers = 
+
+dotnet_naming_symbols.non_field_members.applicable_kinds = property, event, method
+dotnet_naming_symbols.non_field_members.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+dotnet_naming_symbols.non_field_members.required_modifiers = 
+
+# Naming styles
+
+dotnet_naming_style.begins_with_i.required_prefix = I
+dotnet_naming_style.begins_with_i.required_suffix = 
+dotnet_naming_style.begins_with_i.word_separator = 
+dotnet_naming_style.begins_with_i.capitalization = pascal_case
+
+dotnet_naming_style.pascal_case.required_prefix = 
+dotnet_naming_style.pascal_case.required_suffix = 
+dotnet_naming_style.pascal_case.word_separator = 
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+dotnet_naming_style.pascal_case.required_prefix = 
+dotnet_naming_style.pascal_case.required_suffix = 
+dotnet_naming_style.pascal_case.word_separator = 
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+dotnet_style_readonly_field = true:suggestion
+dotnet_style_predefined_type_for_member_access = true:suggestion
+dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggestion
+dotnet_style_allow_multiple_blank_lines_experimental = true:silent
+dotnet_style_allow_statement_immediately_after_block_experimental = true:silent
+dotnet_code_quality_unused_parameters = all:suggestion
+dotnet_style_parentheses_in_arithmetic_binary_operators = always_for_clarity:silent
+dotnet_style_parentheses_in_other_binary_operators = always_for_clarity:silent
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:silent
+dotnet_style_parentheses_in_other_operators = never_if_unnecessary:silent
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:silent
+dotnet_style_qualification_for_method = false:silent
+dotnet_style_qualification_for_event = false:silent
+indent_style = tab
+
+# Make class static
+dotnet_diagnostic.rcs1102.severity = warning
+
+# SCS0000: Compilation analysis completed for {0}.
+dotnet_diagnostic.SCS0000.severity = warning
+
+# SCS0001: Potential Command Injection vulnerability was found where '{0}' in '{1}' may be tainted by user-controlled data from '{2}' in method '{3}'.
+dotnet_diagnostic.SCS0001.severity = warning
+
+# SCS0002: Potential SQL injection vulnerability was found where '{0}' in '{1}' may be tainted by user-controlled data from '{2}' in method '{3}'.
+dotnet_diagnostic.SCS0002.severity = warning
+
+# SCS0003: Potential XPath injection vulnerability was found where '{0}' in '{1}' may be tainted by user-controlled data from '{2}' in method '{3}'.
+dotnet_diagnostic.SCS0003.severity = warning
+
+# SCS0004: Certificate Validation has been disabled.
+dotnet_diagnostic.SCS0004.severity = warning
+
+# SCS0005: Weak random number generator.
+dotnet_diagnostic.SCS0005.severity = warning
+
+# SCS0006: Weak hashing function.
+dotnet_diagnostic.SCS0006.severity = warning
+
+# SCS0007: Potential XML eXternal Entity (XXE) vulnerability.
+dotnet_diagnostic.SCS0007.severity = warning
+
+# SCS0008: The cookie is missing 'Secure' flag.
+dotnet_diagnostic.SCS0008.severity = warning
+
+# SCS0010: Weak cipher algorithm.
+dotnet_diagnostic.SCS0010.severity = warning
+
+# SCS0011: Unsafe XSLT setting used.
+dotnet_diagnostic.SCS0011.severity = warning
+
+# SCS0012: Controller method is potentially vulnerable to authorization bypass.
+dotnet_diagnostic.SCS0012.severity = warning
+
+# SCS0009: The cookie is missing 'HttpOnly' flag.
+dotnet_diagnostic.SCS0009.severity = warning
+
+# RCS1163: Unused parameter.
+dotnet_diagnostic.RCS1163.severity = warning
+
+# RCS1164: Unused type parameter.
+dotnet_diagnostic.RCS1164.severity = warning
+
+# RCS1169: Make field read-only.
+dotnet_diagnostic.RCS1169.severity = warning
+
+# RCS1001: Add braces (when expression spans over multiple lines).
+dotnet_diagnostic.RCS1001.severity = warning
+
+# RCS1003: Add braces to if-else (when expression spans over multiple lines).
+dotnet_diagnostic.RCS1003.severity = warning
+
+# RCS1007: Add braces.
+dotnet_diagnostic.RCS1007.severity = warning
+
+# RCS1008: Use explicit type instead of 'var' (when the type is not obvious).
+dotnet_diagnostic.RCS1008.severity = warning
+
+# RCS1015: Use nameof operator.
+dotnet_diagnostic.RCS1015.severity = warning
+
+# RCS1018: Add/remove accessibility modifiers.
+dotnet_diagnostic.RCS1018.severity = warning
+
+# RCS1019: Order modifiers.
+dotnet_diagnostic.RCS1019.severity = none
+
+# RCS1020: Simplify Nullable<T> to T?.
+dotnet_diagnostic.RCS1020.severity = warning
+
+# RCS1036: Remove unnecessary blank line.
+dotnet_diagnostic.RCS1036.severity = warning
+
+# RCS1037: Remove trailing white-space.
+dotnet_diagnostic.RCS1037.severity = warning
+
+# RCS1040: Remove empty 'else' clause.
+dotnet_diagnostic.RCS1040.severity = warning
+
+# RCS1041: Remove empty initializer.
+dotnet_diagnostic.RCS1041.severity = warning
+
+# RCS1046: Asynchronous method name should end with 'Async'.
+dotnet_diagnostic.RCS1046.severity = none
+
+# RCS1047: Non-asynchronous method name should not end with 'Async'.
+dotnet_diagnostic.RCS1047.severity = warning
+
+# RCS1055: Avoid semicolon at the end of declaration.
+dotnet_diagnostic.RCS1055.severity = warning
+
+# RCS1056: Avoid usage of using alias directive.
+dotnet_diagnostic.RCS1056.severity = none
+
+# RCS1060: Declare each type in separate file.
+dotnet_diagnostic.RCS1060.severity = warning
+
+# RCS1061: Merge 'if' with nested 'if'.
+dotnet_diagnostic.RCS1061.severity = suggestion
+
+# RCS1066: Remove empty 'finally' clause.
+dotnet_diagnostic.RCS1066.severity = warning
+
+# RCS1072: Remove empty namespace declaration.
+dotnet_diagnostic.RCS1072.severity = warning
+
+# RCS1073: Convert 'if' to 'return' statement.
+dotnet_diagnostic.RCS1073.severity = warning
+
+# RCS1077: Optimize LINQ method call.
+dotnet_diagnostic.RCS1077.severity = warning
+
+# RCS1080: Use 'Count/Length' property instead of 'Any' method.
+dotnet_diagnostic.RCS1080.severity = none
+
+# RCS1078: Use "" or 'string.Empty'.
+dotnet_diagnostic.RCS1078.severity = none
+
+# RCS1091: Remove empty region.
+dotnet_diagnostic.RCS1091.severity = warning
+
+# RCS1103: Convert 'if' to assignment.
+dotnet_diagnostic.RCS1103.severity = silent
+
+# RCS1113: Use 'string.IsNullOrEmpty' method.
+dotnet_diagnostic.RCS1113.severity = warning
+
+# RCS1114: Remove redundant delegate creation.
+dotnet_diagnostic.RCS1114.severity = warning
+
+# RCS1126: Add braces to if-else.
+dotnet_diagnostic.RCS1126.severity = warning
+
+# RCS1151: Remove redundant cast.
+dotnet_diagnostic.RCS1151.severity = suggestion
+
+# RCS1162: Avoid chain of assignments.
+dotnet_diagnostic.RCS1162.severity = warning
+
+# RCS1190: Join string expressions.
+dotnet_diagnostic.RCS1190.severity = warning
+
+# RCS1197: Optimize StringBuilder.Append/AppendLine call.
+dotnet_diagnostic.RCS1197.severity = warning
+
+# RCS1198: Avoid unnecessary boxing of value type.
+dotnet_diagnostic.RCS1198.severity = warning
+
+# RCS1202: Avoid NullReferenceException.
+dotnet_diagnostic.RCS1202.severity = warning
+
+# RCS1207: Use anonymous function or method group.
+dotnet_diagnostic.RCS1207.severity = suggestion
+
+# RCS1216: Unnecessary unsafe context.
+dotnet_diagnostic.RCS1216.severity = warning
+
+# RCS1227: Validate arguments correctly.
+dotnet_diagnostic.RCS1227.severity = warning
+
+# RCS1229: Use async/await when necessary.
+dotnet_diagnostic.RCS1229.severity = warning
+
+# RCS1235: Optimize method call.
+dotnet_diagnostic.RCS1235.severity = warning
+
+# RCS0001: Add blank line after embedded statement.
+dotnet_diagnostic.RCS0001.severity = warning
+
+# RCS0003: Add blank line after using directive list.
+dotnet_diagnostic.RCS0003.severity = warning
+
+# RCS0007: Add blank line between accessors.
+dotnet_diagnostic.RCS0007.severity = warning
+
+# RCS0008: Add blank line between closing brace and next statement.
+dotnet_diagnostic.RCS0008.severity = warning
+
+# RCS0009: Add blank line between declaration and documentation comment.
+dotnet_diagnostic.RCS0009.severity = warning
+
+# RCS0010: Add blank line between declarations.
+dotnet_diagnostic.RCS0010.severity = warning
+
+# RCS0014: Add blank line between switch sections.
+dotnet_diagnostic.RCS0014.severity = warning
+
+# RCS0024: Add new line after switch label.
+dotnet_diagnostic.RCS0024.severity = warning
+
+# RCS0025: Put full accessor on its own line.
+dotnet_diagnostic.RCS0025.severity = warning
+
+# RCS0028: Place new line after/before '?:' operator.
+dotnet_diagnostic.RCS0028.severity = warning
+
+# RCS0029: Put constructor initializer on its own line.
+dotnet_diagnostic.RCS0029.severity = warning
+
+# RCS0030: Add new line before embedded statement.
+dotnet_diagnostic.RCS0030.severity = warning
+
+# RCS0031: Add new line before enum member.
+dotnet_diagnostic.RCS0031.severity = warning
+
+# RCS0032: Place new line after/before arrow token.
+dotnet_diagnostic.RCS0032.severity = warning
+
+# RCS0033: Add new line before statement.
+dotnet_diagnostic.RCS0033.severity = warning
+
+# RCS0034: Add new line before type parameter constraint.
+dotnet_diagnostic.RCS0034.severity = warning
+
+# RCS0041: Remove new line between 'if' keyword and 'else' keyword.
+dotnet_diagnostic.RCS0041.severity = warning
+
+# RCS0046: Use spaces instead of tab.
+dotnet_diagnostic.RCS0046.severity = none
+
+# RCS0051: Add/remove new line before 'while' in 'do' statement.
+dotnet_diagnostic.RCS0051.severity = warning
+
+# SCS0034: The {0} property must be set.
+dotnet_diagnostic.SCS0034.severity = warning
+
+# SCS0013: Potential usage of weak CipherMode.
+dotnet_diagnostic.SCS0013.severity = warning
+
+# SCS0015: Hardcoded value in '{0}'.
+dotnet_diagnostic.SCS0015.severity = warning
+
+# SCS0016: Controller method is potentially vulnerable to Cross Site Request Forgery (CSRF).
+dotnet_diagnostic.SCS0016.severity = warning
+
+# SCS0017: Request validation disabled in base class.
+dotnet_diagnostic.SCS0017.severity = warning
+
+# SCS0018: Potential Path Traversal vulnerability was found where '{0}' in '{1}' may be tainted by user-controlled data from '{2}' in method '{3}'.
+dotnet_diagnostic.SCS0018.severity = warning
+
+# SCS0019: OutputCache annotation is disabling authorization checks.
+dotnet_diagnostic.SCS0019.severity = warning
+
+# SCS0021: Request validation has been disabled in {0}({1}): {2}.
+dotnet_diagnostic.SCS0021.severity = warning
+
+# SCS0022: Event validation is disabled in {0}({1}): {2}.
+dotnet_diagnostic.SCS0022.severity = warning
+
+# SCS0023: View state is not encrypted in {0}({1}): {2}.
+dotnet_diagnostic.SCS0023.severity = warning
+
+# SCS0024: View state mac is disabled in {0}({1}): {2}.
+dotnet_diagnostic.SCS0024.severity = warning
+
+# SCS0026: Potential LDAP injection vulnerability was found where '{0}' in '{1}' may be tainted by user-controlled data from '{2}' in method '{3}'.
+dotnet_diagnostic.SCS0026.severity = warning
+
+# SCS0027: Potential Open Redirect vulnerability was found where '{0}' in '{1}' may be tainted by user-controlled data from '{2}' in method '{3}'.
+dotnet_diagnostic.SCS0027.severity = warning
+
+# SCS0028: Potential unsafe deserialization vulnerability was found where '{0}' in '{1}' may be tainted by user-controlled data from '{2}' in method '{3}'.
+dotnet_diagnostic.SCS0028.severity = warning
+
+# SCS0029: Potential Cross-Site Scripting (XSS) vulnerability was found where '{0}' in '{1}' may be tainted by user-controlled data from '{2}' in method '{3}'.
+dotnet_diagnostic.SCS0029.severity = warning
+
+# SCS0030: Request validation is enabled only for pages, not for all HTTP requests in {0}({1}): {2}.
+dotnet_diagnostic.SCS0030.severity = warning
+
+# SCS0031: Potential LDAP injection vulnerability was found where '{0}' in '{1}' may be tainted by user-controlled data from '{2}' in method '{3}'.
+dotnet_diagnostic.SCS0031.severity = warning
+
+# SCS0032: The RequiredLength property of PasswordValidator should be set to at least {0}.
+dotnet_diagnostic.SCS0032.severity = warning
+
+# SCS0033: Less than {0} properties set in PasswordValidator declaration.
+dotnet_diagnostic.SCS0033.severity = warning
+
+# Avoid CS8618 warning when initializing mutable non nullable property with argument validation
+dotnet_diagnostic.CS8618.severity = none
+
+# CS8600 "Converting null literal or possible null value to non-nullable type
+dotnet_diagnostic.CS8600.severity = none
+
+# IDE0007: Use 'var' instead of explicit type
+dotnet_diagnostic.IDE0007.severity = none
+
+# CS8625: Cannot convert null literal to non-nullable reference type
+dotnet_diagnostic.CS8625.severity = none
+
+# RCS0056: A line is too long.
+dotnet_diagnostic.RCS0056.severity = warning
+
+# CS8604	Possible null reference argument for parameter 'data'
+dotnet_diagnostic.CS8604.severity = none
+
+# CS8601 Possible null reference assignment
+dotnet_diagnostic.CS8601.severity = none
+
+# Missing XML comment for publicly visible type or member 'Type_or_Member'
+dotnet_diagnostic.CS1591.severity = none
