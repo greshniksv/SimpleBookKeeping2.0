@@ -74,7 +74,7 @@ namespace DAL.DbContexts
 				Id = userId,
 				UserName = "admin",
 				NormalizedUserName = "ADMIN",
-				PasswordHash = "AQAAAAEAACcQAAAAEK7r6IsCoUqPcaM5+2iPLbEc7XAZH1vZvGCqgtWmtJ2WQcF9UftHKXPvzgGU26K3kA==",
+				PasswordHash = "AQAAAAIAAYagAAAAEAxwgNqYtpwlA4yyzI8Qr5np8nQvqI3/vm9lZ2iVdPCwhbqYd2+T9B1Gvy8vaRUp1w==",
 				SecurityStamp = "QIG77W2IDH3QVJD3K7JKTNW5VIMX7YRE",
 				PhoneNumber = "+710102223344",
 				Email = "admin@mail.com",

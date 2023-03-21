@@ -4,13 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace DAL.DbContexts
 {
 	public class MainContext : DbContext, IMainContext
 	{
-		public MainContext(DbContextOptions options)
+		public MainContext(DbContextOptions<MainContext> options)
 			: base(options)
 		{
 		}
@@ -37,7 +36,8 @@ namespace DAL.DbContexts
 			return Model;
 		}
 
-		public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+		public Task<IDbContextTransaction> BeginTransactionAsync(
+			CancellationToken cancellationToken = default)
 		{
 			return GetDatabase().BeginTransactionAsync(cancellationToken);
 		}

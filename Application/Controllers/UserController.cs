@@ -1,5 +1,7 @@
+using DAL.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers
@@ -18,6 +20,18 @@ namespace Application.Controllers
 		{
 			this.logger = logger;
 			this.mediator = mediator;
+		}
+
+		[AllowAnonymous]
+		[HttpGet()]
+		public IActionResult Create()
+		{
+			var _hasher = new PasswordHasher<ApplicationUser>();
+			var password = _hasher.HashPassword(new ApplicationUser() {
+				UserName = "admin"
+			}, "admin");
+
+			return StatusCode(StatusCodes.Status200OK, password);
 		}
 
 		//[AllowAnonymous]

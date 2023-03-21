@@ -7,7 +7,7 @@ using DAL.Models;
 
 namespace DAL.Repositories
 {
-	public abstract class BaseRepository<TEntity> : IBaseRepository<TEntity>
+	abstract public class BaseRepository<TEntity> : IBaseRepository<TEntity>
 		where TEntity : BaseEntity
 	{
 		internal IMainContext Context;

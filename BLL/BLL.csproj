@@ -34,9 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CommandAndQueries\Users\UserCommands\" />
-    <Folder Include="CommandAndQueries\Users\UserNotifications\" />
-    <Folder Include="CommandAndQueries\Users\UserQueries\" />
+    <Folder Include="CommandAndQueries\Users\Commands\Handlers\" />
     <Folder Include="DtoModels\" />
     <Folder Include="ResultModels\" />
   </ItemGroup>
