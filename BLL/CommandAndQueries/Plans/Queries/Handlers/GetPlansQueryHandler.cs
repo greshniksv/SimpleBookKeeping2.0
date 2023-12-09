@@ -1,57 +1,71 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using BLL.CommandAndQueries.Plans.Queries;
-using MediatR;
-using SimpleBookKeeping.Database;
-using SimpleBookKeeping.Database.Entities;
-using SimpleBookKeeping.Models;
+﻿using AutoMapper;
+using BLL.DtoModels;
+using BLL.Interfaces;
+using DAL.DbModels;
+using DAL.Interfaces;
+using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 {
-	public class GetPlansQueryHandler : IRequestHandler<GetPlansQuery, IList<PlanModel>>
+	public class GetPlansQueryHandler : IQueryHandler<GetPlansQuery, IList<PlanModel>>
 	{
-		public IList<PlanModel> Handle(GetPlansQuery message)
+		private readonly IPlanRepository _planRepository;
+		private readonly IPlanMemberRepository _memberRepository;
+		private readonly IMainContext _mainContext;
+		private readonly IMapper _mapper;
+
+		public GetPlansQueryHandler(IPlanRepository planRepository, IPlanMemberRepository memberRepository, IMapper mapper, IMainContext mainContext)
 		{
-			if (message.UserId == Guid.Empty)
-				throw new Exception("GetPlansQueryHandler. UserId can't be empty.");
+			_planRepository = planRepository;
+			_memberRepository = memberRepository;
+			_mapper = mapper;
+			_mainContext = mainContext;
+		}
 
-			IList<PlanModel> planModels;
-			using (var session = Db.Session)
+		public async Task<IList<PlanModel>> Handle(GetPlansQuery request, CancellationToken cancellationToken)
+		{
+			if (request.UserId == Guid.Empty)
 			{
-				List<Plan> plans = new List<Plan>();
-				var planQuery = session.QueryOver<Plan>();
-
-				planQuery = planQuery.Where(x => x.User.Id == message.UserId);
-
-				if (message.ShowDeleted != null)
-					planQuery = planQuery.Where(x => x.Deleted == message.ShowDeleted);
-
-				if (message.IsActive != null)
-				{
-					var now = DateTime.Now;
-					planQuery = planQuery.Where(x => x.Start <= now && x.End >= now);
-				}
-
-				plans.AddRange(planQuery.List());
-
-				List<Plan> planByMember =
-					session.QueryOver<PlanMember>().Where(x => x.User.Id == message.UserId).Select(x => x.Plan).List<Plan>().ToList();
-
-				if (message.ShowDeleted != null)
-
-					planByMember.RemoveAll(x => x.Deleted != message.ShowDeleted);
-
-				if (message.IsActive != null)
-				{
-					var now = DateTime.Now;
-					planByMember.RemoveAll(x => !(x.Start <= now && x.End >= now));
-				}
-
-				plans.AddRange(planByMember);
-
-				planModels = AutoMapperConfig.Mapper.Map<IList<PlanModel>>(plans.Distinct());
+				throw new Exception("GetPlansQueryHandler. UserId can't be empty.");
 			}
+
+			List<Plan> plans = new List<Plan>();
+			IQueryable<Plan> planQuery = _mainContext.Plans.AsQueryable();
+			planQuery = planQuery.Where(x => x.User.Id == request.UserId);
+
+			if (request.ShowDeleted != null)
+			{
+				planQuery = planQuery.Where(x => x.Deleted == request.ShowDeleted);
+			}
+
+			if (request.IsActive != null)
+			{
+				DateTime now = DateTime.Now;
+				planQuery = planQuery.Where(x => x.Start <= now && x.End >= now);
+			}
+
+			plans.AddRange(await planQuery.ToListAsync(cancellationToken));
+			List<Plan> planByMember =
+				await _memberRepository.GetAsync(x =>
+					x.User.Id == request.UserId, null,
+						$"{nameof(PlanMember.User)},{nameof(PlanMember.Plan)}")
+					.Select(x => x.Plan)
+					.ToListAsync(cancellationToken);
+
+			if (request.ShowDeleted != null)
+			{
+				planByMember.RemoveAll(x => x.Deleted != request.ShowDeleted);
+			}
+
+			if (request.IsActive != null)
+			{
+				DateTime now = DateTime.Now;
+				planByMember.RemoveAll(x => !(x.Start <= now && x.End >= now));
+			}
+
+			plans.AddRange(planByMember);
+			IList<PlanModel> planModels = _mapper.Map<IList<PlanModel>>(plans.Distinct());
 
 			return planModels;
 		}

@@ -1,32 +1,43 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using AutoMapper;
+using BLL.DtoModels;
+using DAL.DbModels;
+using DAL.Repositories.Interfaces;
 using MediatR;
-using SimpleBookKeeping.Database;
-using SimpleBookKeeping.Database.Entities;
-using SimpleBookKeeping.Models;
 
 namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 {
 	public class GetActivePlanCostsQueryHandler : IRequestHandler<GetActivePlanCostsQuery, IReadOnlyCollection<PlanCostsModel>>
 	{
-		/// <summary>Handles a request</summary>
-		/// <param name="message">The request message</param>
-		/// <returns>Response from the request</returns>
-		public IReadOnlyCollection<PlanCostsModel> Handle(GetActivePlanCostsQuery message)
+		private readonly IPlanRepository _planRepository;
+		private readonly IPlanMemberRepository _memberRepository;
+		private readonly IMapper _mapper;
+
+		public GetActivePlanCostsQueryHandler(IPlanRepository planRepository, IPlanMemberRepository memberRepository, IMapper mapper)
 		{
-			List<PlanCostsModel> planCostsModels = new List<PlanCostsModel>();
+			_planRepository = planRepository;
+			_memberRepository = memberRepository;
+			_mapper = mapper;
+		}
+
+		/// <summary>Handles a request</summary>
+		/// <param name="request">The request message</param>
+		/// <param name="cancellationToken"></param>
+		/// <returns>Response from the request</returns>
+		public async Task<IReadOnlyCollection<PlanCostsModel>> Handle(GetActivePlanCostsQuery request, CancellationToken cancellationToken)
+		{
+			List<PlanCostsModel> planCostsModels = new();
 			List<Plan> plans = new List<Plan>();
-			using (var session = Db.Session)
-			{
-				// Note: Find by creator and by member in plan.
-				var plansByCreator = session.QueryOver<Plan>().Where(x => x.User.Id == message.UserId && x.Deleted == false).List<Plan>();
-				var plansByMember = session.QueryOver<PlanMember>().Where(x => x.User.Id == message.UserId).Select(x => x.Plan).List<Plan>();
+			List<Plan> plansByCreator =
+				await _planRepository.GetAsync(x => x.User.Id == request.UserId && x.Deleted == false).ToListAsync(cancellationToken);
+			IEnumerable<Plan> plansByMember =
+				(await _memberRepository.GetAsync(x =>
+					x.User.Id == request.UserId, null, $"{nameof(PlanMember.Plan)}").ToListAsync(cancellationToken))
+				.Select(x => x.Plan);
 
-				plans.AddRange(plansByCreator);
-				plans.AddRange(plansByMember.Where(x => x.Deleted == false));
+			plans.AddRange(plansByCreator);
+			plans.AddRange(plansByMember.Where(x => x.Deleted == false));
 
-				planCostsModels.AddRange(AutoMapperConfig.Mapper.Map<List<PlanCostsModel>>(plans.Distinct()));
-			}
+			planCostsModels.AddRange(_mapper.Map<List<PlanCostsModel>>(plans.Distinct()));
 
 			return planCostsModels;
 		}

@@ -1,50 +1,62 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using BLL.CommandAndQueries.Credits.Queries;
-using MediatR;
-using SimpleBookKeeping.Database;
-using SimpleBookKeeping.Database.Entities;
-using SimpleBookKeeping.Models;
+﻿using BLL.DtoModels;
+using BLL.Interfaces;
+using DAL.DbModels;
+using DAL.Interfaces;
+using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BLL.CommandAndQueries.Credits.Queries.Handlers
 {
-	public class GetCreditSpendsHandler : IRequestHandler<GetCreditSpends, IList<SpendCreditInfoModel>>
+	public class GetCreditSpendsHandler : IQueryHandler<GetCreditSpends, IReadOnlyList<SpendCreditInfoModel>>
 	{
-		public IList<SpendCreditInfoModel> Handle(GetCreditSpends message)
+		private readonly IMainContext _mainContext;
+
+		public GetCreditSpendsHandler(IMainContext mainContext)
 		{
-			if (message.CostId == Guid.Empty || message.UserId == Guid.Empty)
-				throw new ArgumentNullException(nameof(message));
+			_mainContext = mainContext;
+		}
 
-			IList<SpendCreditInfoModel> models;
-			using (var session = Db.Session)
+		public async Task<IReadOnlyList<SpendCreditInfoModel>> Handle(GetCreditSpends request, CancellationToken cancellationToken)
+		{
+			if (request.CostId == Guid.Empty || request.UserId == Guid.Empty)
 			{
-				var data = string.Concat(DateTime.Now.ToString("yyyy-MM-dd"), " 00:00:00.000");
-				var query = session.CreateSQLQuery("SELECT distinct {s.*}  " +
-					  " FROM [CostDetails] as c, [Spends] as s\r\n  " +
-					  " where c.[datetime] > \'" + data + "\'\r\n  and s.[cost_detail_id] = c.[id]\r\n  " +
-					  " and c.[deleted] = 0 and c.[cost_id] = '" + message.CostId + "'");
+				throw new ArgumentNullException(nameof(request));
+			}
 
-				query.AddEntity("s", typeof(Spend));
-				var items = query.List<Spend>();
+			List<Spend> items = await (from costDetails in _mainContext.CostDetails
+									   join spend in _mainContext.Spends on costDetails.Id equals spend.CostDetailId
+									   where costDetails.Date > DateTime.Now &&
+									         costDetails.CostId == request.CostId &&
+											 costDetails.Deleted == false
+									   select spend).Distinct().ToListAsync(cancellationToken);
 
-				models = new List<SpendCreditInfoModel>();
-				foreach (var spend in items)
+			//var query = session.CreateSQLQuery("SELECT distinct {s.*}  " +
+			//   " FROM [CostDetails] as c, [Spends] as s\r\n  " +
+			//   " where c.[datetime] > \'" + data + "\'\r\n  and s.[cost_detail_id] = c.[id]\r\n  " +
+			//   " and c.[deleted] = 0 and c.[cost_id] = '" + request.CostId + "'");
+
+			IList<SpendCreditInfoModel> models = new List<SpendCreditInfoModel>();
+			foreach (var spend in items)
+			{
+				SpendCreditInfoModel? creditItem =
+					models.FirstOrDefault(x => x.Comment == spend.Comment && x.Value == spend.Value);
+
+				if (creditItem == null)
 				{
-					var creditItem = models.FirstOrDefault(x => x.Comment == spend.Comment && x.Value == spend.Value);
-
-					if (creditItem == null)
-						models.Add(new SpendCreditInfoModel {
-							Comment = spend.Comment,
-							Value = spend.Value,
-							DaysToFinish = 1
-						});
-					else
-						creditItem.DaysToFinish++;
+					models.Add(new SpendCreditInfoModel {
+						Comment = spend.Comment,
+						Value = spend.Value,
+						DaysToFinish = 1
+					});
+				}
+				else
+				{
+					creditItem.DaysToFinish++;
 				}
 			}
 
-			return models;
+
+			return models.AsReadOnly();
 		}
 	}
 }

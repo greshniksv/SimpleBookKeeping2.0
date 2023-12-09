@@ -1,33 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using BLL.CommandAndQueries.Spends.Queries;
-using MediatR;
-using SimpleBookKeeping.Database;
-using SimpleBookKeeping.Database.Entities;
-using SimpleBookKeeping.Models;
+﻿using AutoMapper;
+using BLL.DtoModels;
+using BLL.Interfaces;
+using DAL.DbModels;
+using DAL.Repositories.Interfaces;
 
 namespace BLL.CommandAndQueries.Spends.Queries.Handlers
 {
-	public class GetSpendsQueryHandler : IRequestHandler<GetSpendsQuery, IList<SpendModel>>
+	public class GetSpendsQueryHandler : IQueryHandler<GetSpendsQuery, IReadOnlyList<SpendModel>>
 	{
-		/// <summary>Handles a request</summary>
-		/// <param name="message">The request message</param>
-		/// <returns>Response from the request</returns>
-		public IList<SpendModel> Handle(GetSpendsQuery message)
+		private readonly ISpendRepository _repository;
+		private readonly IMapper _mapper;
+
+		public GetSpendsQueryHandler(ISpendRepository repository, IMapper mapper)
 		{
-			if (message.CostId == Guid.Empty || message.UserId == Guid.Empty)
-				throw new ArgumentNullException(nameof(message));
+			_repository = repository;
+			_mapper = mapper;
+		}
 
-			IList<SpendModel> models;
-			using (var session = Db.Session)
+		/// <summary>Handles a request</summary>
+		/// <param name="request">The request request</param>
+		/// <param name="cancellationToken"></param>
+		/// <returns>Response from the request</returns>
+		public async Task<IReadOnlyList<SpendModel>> Handle(GetSpendsQuery request, CancellationToken cancellationToken)
+		{
+			if (request.CostId == Guid.Empty || request.UserId == Guid.Empty)
 			{
-				var items = session.QueryOver<Spend>()
-					.Where(x => x.User.Id == message.UserId && x.CostDetail.Cost.Id == message.CostId).List();
-
-				models = AutoMapperConfig.Mapper.Map<IList<SpendModel>>(items);
+				throw new ArgumentNullException(nameof(request));
 			}
 
-			return models;
+			List<Spend> items =
+				await _repository.GetAsync(x =>
+						x.User.Id == request.UserId &&
+						x.CostDetail.Cost.Id == request.CostId)
+					.ToListAsync(cancellationToken);
+
+			IList<SpendModel> models = _mapper.Map<IList<SpendModel>>(items);
+
+			return models.AsReadOnly();
 		}
 	}
 }

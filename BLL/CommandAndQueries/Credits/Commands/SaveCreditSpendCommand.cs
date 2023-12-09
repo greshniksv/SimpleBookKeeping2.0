@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using MediatR;
-using SimpleBookKeeping.Models;
+﻿using BLL.DtoModels;
+using BLL.Interfaces;
 
 namespace BLL.CommandAndQueries.Credits.Commands
 {
-	public class SaveCreditSpendCommand : IRequest
+	public class SaveCreditSpendCommand : ICommand<bool>
 	{
 		public IReadOnlyCollection<AddCreditSpendModel> SpendModels { get; set; }
 

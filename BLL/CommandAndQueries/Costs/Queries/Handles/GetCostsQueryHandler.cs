@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using BLL.DtoModels;
+using BLL.Exceptions;
 using BLL.Interfaces;
 using DAL.DbModels;
 using DAL.Repositories.Interfaces;
-using SimpleBookKeeping.Exceptions;
 
 namespace BLL.CommandAndQueries.Costs.Queries.Handles
 {
@@ -28,13 +28,13 @@ namespace BLL.CommandAndQueries.Costs.Queries.Handles
 			IList<Cost> costs;
 			if (request.ShowDeleted)
 			{
-				costs = (await _costRepository.GetAsync(x =>
-					x.Plan.Id == request.PlanId)).ToList();
+				costs = await _costRepository.GetAsync(x =>
+					x.Plan.Id == request.PlanId).ToListAsync(cancellationToken);
 			}
 			else
 			{
-				costs = (await _costRepository.GetAsync(x =>
-					x.Plan.Id == request.PlanId && x.Deleted == false)).ToList();
+				costs = await _costRepository.GetAsync(x =>
+					x.Plan.Id == request.PlanId && x.Deleted == false).ToListAsync(cancellationToken);
 			}
 
 			IList<CostModel> costModels = _mapper.Map<IList<CostModel>>(costs);

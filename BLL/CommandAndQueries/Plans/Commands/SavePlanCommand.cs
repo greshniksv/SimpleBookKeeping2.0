@@ -1,10 +1,9 @@
-﻿using System;
-using MediatR;
-using SimpleBookKeeping.Models;
+﻿using BLL.DtoModels;
+using BLL.Interfaces;
 
 namespace BLL.CommandAndQueries.Plans.Commands
 {
-	public class SavePlanCommand : IRequest<bool>
+	public class SavePlanCommand : ICommand<bool>
 	{
 		public PlanModel PlanModel { get; set; }
 

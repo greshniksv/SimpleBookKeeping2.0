@@ -1,10 +1,9 @@
-﻿using System;
-using MediatR;
-using SimpleBookKeeping.Models;
+﻿using BLL.DtoModels;
+using BLL.Interfaces;
 
 namespace BLL.CommandAndQueries.Plans.Queries
 {
-	public class GetPlanStatusQuery : IRequest<PlanStatusModel>
+	public class GetPlanStatusQuery : IQuery<PlanStatusModel>
 	{
 		public Guid PlanId { get; set; }
 	}

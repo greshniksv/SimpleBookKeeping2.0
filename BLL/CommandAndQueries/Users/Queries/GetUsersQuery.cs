@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using MediatR;
-using SimpleBookKeeping.Models;
+﻿using BLL.DtoModels;
+using BLL.Interfaces;
 
 namespace BLL.CommandAndQueries.Users.Queries
 {
-	public class GetUsersQuery : IRequest<IList<UserModel>>
+	public class GetUsersQuery : IQuery<IReadOnlyList<UserModel>>
 	{
-		public IList<Guid> UsersId { get; set; }
+		public IList<Guid>? UsersId { get; set; }
 	}
 }

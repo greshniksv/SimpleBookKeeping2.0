@@ -1,42 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using BLL.CommandAndQueries.Credits.Commands;
-using MediatR;
-using SimpleBookKeeping.Database;
-using SimpleBookKeeping.Database.Entities;
+﻿using BLL.Interfaces;
+using DAL.DbModels;
+using DAL.Interfaces;
+using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BLL.CommandAndQueries.Credits.Commands.Handlers
 {
-	public class SaveCreditSpendCommandHandler : RequestHandler<SaveCreditSpendCommand>
+	public class SaveCreditSpendCommandHandler : ICommandHandler<SaveCreditSpendCommand, bool>
 	{
-		/// <summary>Handles a void request</summary>
-		/// <param name="message">The request message</param>
-		protected override void HandleCore(SaveCreditSpendCommand message)
-		{
-			if (!message.SpendModels.Any())
-				return;
+		private readonly ICostDetailRepository _costDetailRepository;
+		private readonly IUserRepository _userRepository;
+		private readonly ISpendRepository _spendRepository;
+		private readonly IMainContext _mainContext;
 
-			using (var session = Db.Session)
-			using (var transaction = session.BeginTransaction())
+		public SaveCreditSpendCommandHandler(ICostDetailRepository costDetailRepository,
+			IUserRepository userRepository, ISpendRepository spendRepository, IMainContext mainContext)
+		{
+			_costDetailRepository = costDetailRepository;
+			_userRepository = userRepository;
+			_spendRepository = spendRepository;
+			_mainContext = mainContext;
+		}
+
+		/// <summary>Handles a void request</summary>
+		/// <param name="request"></param>
+		/// <param name="cancellationToken"></param>
+		public async Task<bool> Handle(SaveCreditSpendCommand request, CancellationToken cancellationToken)
+		{
+			if (!request.SpendModels.Any())
 			{
-				foreach (var spendModel in message.SpendModels)
+				return false;
+			}
+
+			await using IDbContextTransaction
+				transaction = await _mainContext.BeginTransactionAsync(cancellationToken);
+			try
+			{
+				foreach (var spendModel in request.SpendModels)
 				{
-					var partOfSumm = spendModel.Value / spendModel.Days;
-					var days = spendModel.Days;
+					int partOfSum = spendModel.Value / spendModel.Days;
+					int days = spendModel.Days;
 					var selectedCostDetail = new List<CostDetail>();
 
-					var costDetailList =
-						session.QueryOver<CostDetail>()
-							.Where(x => x.Cost.Id == spendModel.CostId)
-							.List()
-							.OrderBy(x => x.Date);
+					IEnumerable<CostDetail> costDetailList =
+						await _costDetailRepository
+							.GetAsync(
+								x => x.Cost.Id == spendModel.CostId,
+								x => x.OrderBy(c => c.Date)).ToListAsync(cancellationToken);
 
 					bool startSelect = false;
 					foreach (var costDetail in costDetailList)
 					{
 						if (startSelect)
+						{
 							selectedCostDetail.Add(costDetail);
+						}
 
 						if (costDetail.Id == spendModel.CostDetailId)
 						{
@@ -45,47 +63,63 @@ namespace BLL.CommandAndQueries.Credits.Commands.Handlers
 						}
 
 						if (selectedCostDetail.Count >= days)
+						{
 							break;
+						}
 					}
 
 					foreach (var costDetailItem in selectedCostDetail)
-
+					{
 						if (spendModel.Id == null || spendModel.Id == Guid.Empty)
 						{
-
 							// New Spend
 							Spend spend = new Spend {
-								User = session.QueryOver<User>().Where(x => x.Id == message.UserId).List().First(),
+								User = await _userRepository.GetAsync(x =>
+									x.Id == request.UserId).FirstAsync(cancellationToken),
 								Comment = spendModel.Comment,
-								CostDetail = session.QueryOver<CostDetail>().Where(x => x.Id == costDetailItem.Id).List().First(),
-								Value = partOfSumm,
+								CostDetail = await _costDetailRepository.GetAsync(x =>
+									x.Id == costDetailItem.Id).FirstAsync(cancellationToken),
+								Value = partOfSum,
 								OrderId = costDetailItem.Spends.Count
 							};
 
-							session.Save(spend);
+							await _spendRepository.InsertAsync(spend);
+							await _spendRepository.SaveChangesAsync(true, cancellationToken);
 						}
 						else
 						{
-							Spend oldSpend = session.QueryOver<Spend>().Where(x => x.Id == spendModel.Id).List().First();
+							Spend oldSpend = await _spendRepository.GetAsync(x => x.Id == spendModel.Id).FirstAsync(cancellationToken);
 
 							if (spendModel.Value == 0 && spendModel.Comment == null)
+							{
 								// Remove Spend
-								session.Delete(oldSpend);
+								await _spendRepository.DeleteAsync(oldSpend.Id, true);
+							}
 							else
 							{
 								// Update Spend
-								oldSpend.User = session.QueryOver<User>().Where(x => x.Id == message.UserId).List().First();
+								oldSpend.User = await _userRepository.GetAsync(x =>
+									x.Id == request.UserId).FirstAsync(cancellationToken);
 								oldSpend.Comment = spendModel.Comment;
-								oldSpend.CostDetail = session.QueryOver<CostDetail>().Where(x => x.Id == costDetailItem.Id).List().First();
+								oldSpend.CostDetail = await _costDetailRepository.GetAsync(x =>
+									x.Id == costDetailItem.Id).FirstAsync(cancellationToken);
 								oldSpend.Value = spendModel.Value;
 
-								session.SaveOrUpdate(oldSpend);
+								_spendRepository.Update(oldSpend);
+								await _spendRepository.SaveChangesAsync(true, cancellationToken);
 							}
 						}
-
+					}
 				}
-				transaction.Commit();
+
+				await transaction.CommitAsync(cancellationToken);
 			}
+			catch (Exception e)
+			{
+				await transaction.RollbackAsync(cancellationToken);
+			}
+
+			return true;
 		}
 	}
 }

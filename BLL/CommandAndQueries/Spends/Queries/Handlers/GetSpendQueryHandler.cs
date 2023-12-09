@@ -1,22 +1,27 @@
-﻿using System.Linq;
-using BLL.CommandAndQueries.Spends.Queries;
-using MediatR;
-using SimpleBookKeeping.Database;
-using SimpleBookKeeping.Database.Entities;
-using SimpleBookKeeping.Models;
+﻿using AutoMapper;
+using BLL.DtoModels;
+using BLL.Interfaces;
+using DAL.DbModels;
+using DAL.Repositories.Interfaces;
 
 namespace BLL.CommandAndQueries.Spends.Queries.Handlers
 {
-	public class GetSpendQueryHandler : IRequestHandler<GetSpendQuery, SpendModel>
+	public class GetSpendQueryHandler : IQueryHandler<GetSpendQuery, SpendModel>
 	{
-		public SpendModel Handle(GetSpendQuery message)
+		private readonly ISpendRepository _repository;
+		private readonly IMapper _mapper;
+
+		public GetSpendQueryHandler(ISpendRepository repository, IMapper mapper)
 		{
-			using (var session = Db.Session)
-			{
-				Spend spend = session.QueryOver<Spend>().Where(x => x.Id == message.SpendId).List().First();
-				var spendModel = AutoMapperConfig.Mapper.Map<SpendModel>(spend);
-				return spendModel;
-			}
+			_repository = repository;
+			_mapper = mapper;
+		}
+
+		public async Task<SpendModel> Handle(GetSpendQuery request, CancellationToken cancellationToken)
+		{
+			Spend spend = await _repository.GetByIdAsync(request.SpendId);
+			SpendModel spendModel = _mapper.Map<SpendModel>(spend);
+			return spendModel;
 		}
 	}
 }

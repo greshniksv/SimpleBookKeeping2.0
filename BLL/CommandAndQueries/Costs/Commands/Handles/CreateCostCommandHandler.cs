@@ -1,8 +1,8 @@
 ﻿using BLL.DtoModels;
+using BLL.Exceptions;
 using BLL.Interfaces;
 using DAL.DbModels;
 using DAL.Repositories.Interfaces;
-using SimpleBookKeeping.Exceptions;
 
 namespace BLL.CommandAndQueries.Costs.Commands.Handles
 {
@@ -17,11 +17,11 @@ namespace BLL.CommandAndQueries.Costs.Commands.Handles
 
 		public async Task<CostModel> Handle(CreateCostCommand request, CancellationToken cancellationToken)
 		{
-			Plan plan = ( await _planRepository.GetAsync(p => p.Id == request.PlanId)).FirstOrDefault();
+			Plan plan = await _planRepository.GetAsync(p => p.Id == request.PlanId).FirstAsync(cancellationToken);
 
 			if (plan == null)
 			{
-				throw new PlanNotFoundException($"Plan id: {request.PlanId}");
+				throw new PlanNotFoundException($"Plan id: {request.PlanId.ToString()}");
 			}
 
 			var costDetails = new List<CostDetailModel>();

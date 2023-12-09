@@ -1,7 +1,6 @@
 ﻿using MediatR;
-using SimpleBookKeeping.Models;
 
-namespace SimpleBookKeeping.Commands.Clear
+namespace BLL.CommandAndQueries.Clear
 {
     public class ClearDatabaseCommand : IRequest<bool>
     {

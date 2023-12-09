@@ -15,7 +15,7 @@ namespace BLL.CommandAndQueries.Costs.Queries.Handles
 
 		public async Task<Guid?> Handle(GetCostBySpendQuery request, CancellationToken cancellationToken)
 		{
-			Spend? spend = (await _spendRepository.GetAsync(x => x.Id == request.SpendId)).FirstOrDefault();
+			Spend? spend = await _spendRepository.GetAsync(x => x.Id == request.SpendId).FirstAsync(cancellationToken);
 			return spend?.CostDetail.Cost.Id;
 		}
 	}

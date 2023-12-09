@@ -1,67 +1,93 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BLL.CommandAndQueries.Plans.Commands;
-using MediatR;
-using SimpleBookKeeping.Database;
-using SimpleBookKeeping.Database.Entities;
+﻿using AutoMapper;
+using BLL.Interfaces;
+using DAL.DbModels;
+using DAL.Interfaces;
+using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BLL.CommandAndQueries.Plans.Commands.Handlers
 {
-	public class SavePlanCommandHandler : IRequestHandler<SavePlanCommand, bool>
+	public class SavePlanCommandHandler : ICommandHandler<SavePlanCommand, bool>
 	{
+		private readonly IUserRepository _userRepository;
+		private readonly IPlanRepository _planRepository;
+		private readonly IPlanMemberRepository _planMemberRepository;
+		private readonly IMapper _mapper;
+		private readonly IMainContext _mainContext;
+
+		public SavePlanCommandHandler(IUserRepository userRepository, IPlanRepository planRepository,
+			IPlanMemberRepository planMemberRepository, IMapper mapper, IMainContext mainContext)
+		{
+			_userRepository = userRepository;
+			_planRepository = planRepository;
+			_planMemberRepository = planMemberRepository;
+			_mapper = mapper;
+			_mainContext = mainContext;
+		}
+
 		/// <summary>Handles a request</summary>
 		/// <param name="message">The request message</param>
+		/// <param name="cancellationToken"></param>
 		/// <returns>Response from the request</returns>
-		public bool Handle(SavePlanCommand message)
+		public async Task<bool> Handle(SavePlanCommand message, CancellationToken cancellationToken)
 		{
 			IList<PlanMember> existingPlanMembers = null;
-			Plan plan;
-			IList<User> users;
-			using (var session = Db.Session)
+			IList<User> users = await _userRepository.GetAsync().ToListAsync(cancellationToken);
+
+			Plan plan = await _planRepository.GetByIdAsync(message.PlanModel.Id);
+			User? currentUser = await _userRepository.GetByIdAsync(message.UserId);
+
+			if (plan == null)
 			{
-				users = session.QueryOver<User>().List();
-
-				plan = session.QueryOver<Plan>()
-			   .Where(p => p.Id == message.PlanModel.Id).List().FirstOrDefault();
-
-				var currentUser = session.QueryOver<User>()
-					.Where(x => x.Id == message.UserId)
-					.List().FirstOrDefault();
-
-				if (plan == null)
-					plan = new Plan {
-						User = currentUser
-					};
-				else
-					// Get PlanMembers and remove it
-					existingPlanMembers = plan.PlanMembers.ToList();
+				plan = new Plan {
+					User = currentUser
+				};
+			}
+			else
+			{
+				// Get PlanMembers and remove it
+				existingPlanMembers =
+					await _planMemberRepository.GetAsync(x=>
+						x.PlanId == message.PlanModel.Id).ToListAsync(cancellationToken);
 			}
 
-			AutoMapperConfig.Mapper.Map(message.PlanModel, plan);
+			_mapper.Map(message.PlanModel, plan);
 
-			using (var session = Db.Session)
-			using (var transaction = session.BeginTransaction())
+			await using IDbContextTransaction
+				transaction = await _mainContext.BeginTransactionAsync(cancellationToken);
 			{
-				// Add plan
-				session.SaveOrUpdate(plan);
+				try
+				{
+					// Add plan
+					//session.SaveOrUpdate(plan);
+					_planRepository.Update(plan);
+					await _planRepository.SaveChangesAsync(true, cancellationToken);
 
-				// Remove old plan members
-				if (existingPlanMembers != null && existingPlanMembers.Any())
-					foreach (var existingPlanMember in existingPlanMembers)
+					// Remove old plan members
+					if (existingPlanMembers != null && existingPlanMembers.Any())
 					{
-						existingPlanMember.User = null;
-						existingPlanMember.Plan = null;
-						session.Delete(existingPlanMember);
+						foreach (var existingPlanMember in existingPlanMembers)
+						{
+							existingPlanMember.User = null;
+							existingPlanMember.Plan = null;
+							await _planMemberRepository.DeleteAsync(existingPlanMember, true);
+						}
 					}
 
-				// Add plan members
-				foreach (var userMember in message.PlanModel.UserMembers)
-				{
-					var user = users.First(x => x.Id == userMember);
-					session.Save(new PlanMember { User = user, Plan = plan });
-				}
+					// Add plan members
+					foreach (var userMember in message.PlanModel.UserMembers)
+					{
+						User user = users.First(x => x.Id == userMember);
+						await _planMemberRepository.InsertAsync(new PlanMember { User = user, Plan = plan });
+						await _planMemberRepository.SaveChangesAsync(true, cancellationToken);
+					}
 
-				transaction.Commit();
+					await transaction.CommitAsync(cancellationToken);
+				}
+				catch (Exception e)
+				{
+					await transaction.RollbackAsync(cancellationToken);
+				}
 			}
 
 			return true;

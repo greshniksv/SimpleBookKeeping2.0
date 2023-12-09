@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using MediatR;
-using SimpleBookKeeping.Models;
+﻿using System.ComponentModel;
+using BLL.DtoModels;
+using BLL.Interfaces;
 
 namespace BLL.CommandAndQueries.Plans.Queries
 {
-	public class GetPlansQuery : IRequest<IList<PlanModel>>
+	public class GetPlansQuery : IQuery<IList<PlanModel>>
 	{
 		public GetPlansQuery()
 		{

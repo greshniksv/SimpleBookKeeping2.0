@@ -1,4 +1,5 @@
-﻿using DAL.DbModels;
+﻿using BLL.DtoModels;
+using DAL.DbModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -10,6 +11,10 @@ namespace DAL.Interfaces
 	public interface IMainContext: IDisposable
 	{
 		DbContext GetDbContext();
+
+		List<CostStatusModel> CostList(Guid planId);
+
+		int SpendsSumByPlan(Guid planId);
 
 		DbSet<User> Users { get; set; }
 		DbSet<Spend> Spends { get; set; }

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using MediatR;
-using SimpleBookKeeping.Models;
+﻿using BLL.DtoModels;
+using BLL.Interfaces;
 
 namespace BLL.CommandAndQueries.Spends.Queries
 {
-	public class GetSpendsQuery : IRequest<IList<SpendModel>>
+	public class GetSpendsQuery : IQuery<IReadOnlyList<SpendModel>>
 	{
 		public Guid UserId { get; set; }
 

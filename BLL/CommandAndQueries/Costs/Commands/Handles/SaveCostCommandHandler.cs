@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using BLL.Exceptions;
 using BLL.Interfaces;
 using DAL.DbModels;
 using DAL.Interfaces;
 using DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
-using SimpleBookKeeping.Exceptions;
 
 namespace BLL.CommandAndQueries.Costs.Commands.Handles
 {
@@ -31,11 +31,10 @@ namespace BLL.CommandAndQueries.Costs.Commands.Handles
 			Cost cost;
 			List<CostDetail> costDetails = null;
 
-			Plan plan = ( await _planRepository.GetAsync(p => p.Id == request.Cost.PlanId)).FirstOrDefault();
-
+			Plan plan = await _planRepository.GetAsync(p => p.Id == request.Cost.PlanId).FirstAsync(cancellationToken);
 			if (request.Cost.Id != Guid.Empty)
 			{
-				cost = (await _costRepository.GetAsync(x => x.Id == request.Cost.Id)).FirstOrDefault();
+				cost = await _costRepository.GetAsync(x => x.Id == request.Cost.Id).FirstAsync(cancellationToken);
 				if (cost == null)
 				{
 					throw new CostNotFoundException(request.Cost.Id.ToString());

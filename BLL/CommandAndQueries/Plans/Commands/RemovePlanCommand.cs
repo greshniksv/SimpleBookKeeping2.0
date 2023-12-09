@@ -1,9 +1,8 @@
-﻿using System;
-using MediatR;
+﻿using BLL.Interfaces;
 
 namespace BLL.CommandAndQueries.Plans.Commands
 {
-	public class RemovePlanCommand : IRequest<bool>
+	public class RemovePlanCommand : ICommand<bool>
 	{
 		public Guid PlanId { get; set; }
 	}

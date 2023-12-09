@@ -1,4 +1,6 @@
-﻿namespace BLL.DtoModels
+﻿using DAL.DbModels;
+
+namespace BLL.DtoModels
 {
     public class UserModel
     {

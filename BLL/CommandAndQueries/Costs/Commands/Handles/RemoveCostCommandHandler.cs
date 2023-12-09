@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using BLL.Exceptions;
 using BLL.Interfaces;
 using DAL.DbModels;
 using DAL.Repositories.Interfaces;
-using SimpleBookKeeping.Exceptions;
 
 namespace BLL.CommandAndQueries.Costs.Commands.Handles
 {
@@ -20,7 +20,7 @@ namespace BLL.CommandAndQueries.Costs.Commands.Handles
 		public async Task<bool> Handle(RemoveCostCommand request, CancellationToken cancellationToken)
 		{
 			Cost cost;
-			cost = (await _costRepository.GetAsync(x => x.Id == request.CostId)).FirstOrDefault();
+			cost = await _costRepository.GetAsync(x => x.Id == request.CostId).FirstAsync(cancellationToken);
 			if (cost == null)
 			{
 				throw new CostNotFoundException(request.CostId.ToString());

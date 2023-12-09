@@ -1,7 +1,6 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
-namespace SimpleBookKeeping.Exceptions
+namespace BLL.Exceptions
 {
     [Serializable]
     public class PlanNotFoundException : Exception

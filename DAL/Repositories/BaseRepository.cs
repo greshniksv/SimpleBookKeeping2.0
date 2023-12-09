@@ -21,6 +21,11 @@ namespace DAL.Repositories
 			DbSet = context.Set<TEntity>();
 		}
 
+		public virtual IQueryable<TEntity> GetBySql(string sql)
+		{
+			return DbSet.FromSql($"{sql}");
+		}
+
 		public virtual IEnumerable<TEntity> Get(
 			Expression<Func<TEntity, bool>>? filter = null,
 			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
@@ -39,7 +44,7 @@ namespace DAL.Repositories
 			return orderBy != null ? orderBy(query).ToList() : query.ToList();
 		}
 
-		public virtual async Task<IEnumerable<TEntity>> GetAsync(
+		public virtual IAsyncEnumerable<TEntity> GetAsync(
 			Expression<Func<TEntity, bool>>? filter = null,
 			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
 			string includeProperties = "")
@@ -52,20 +57,46 @@ namespace DAL.Repositories
 			}
 
 			foreach (var includeProperty in includeProperties.Split
-						 (new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+				         (new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
 			{
 				query = query.Include(includeProperty);
 			}
 
 			if (orderBy != null)
 			{
-				return await orderBy(query).ToListAsync();
+				return orderBy(query).AsAsyncEnumerable();
 			}
-			else
-			{
-				return await query.ToListAsync();
-			}
+
+			return query.AsAsyncEnumerable();
 		}
+
+		//public virtual async Task<IEnumerable<TEntity>> GetAsync(
+		//	Expression<Func<TEntity, bool>>? filter = null,
+		//	Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+		//	string includeProperties = "")
+		//{
+		//	IQueryable<TEntity> query = DbSet;
+
+		//	if (filter != null)
+		//	{
+		//		query = query.Where(filter);
+		//	}
+
+		//	foreach (var includeProperty in includeProperties.Split
+		//				 (new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+		//	{
+		//		query = query.Include(includeProperty);
+		//	}
+
+		//	if (orderBy != null)
+		//	{
+		//		return await orderBy(query).ToListAsync();
+		//	}
+		//	else
+		//	{
+		//		return await query.ToListAsync();
+		//	}
+		//}
 
 		public virtual TEntity? GetById(Guid id)
 		{

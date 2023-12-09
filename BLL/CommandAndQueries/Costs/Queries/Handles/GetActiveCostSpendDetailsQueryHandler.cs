@@ -101,8 +101,8 @@ namespace BLL.CommandAndQueries.Costs.Queries.Handles
 
 			foreach (var activePlan in activePlans)
 			{
-				var costs = (await _costRepository.GetAsync(x => x.Plan.Id == activePlan.Id && x.Deleted == false))
-					.ToList();
+				var costs = await _costRepository.GetAsync(x =>
+					x.Plan.Id == activePlan.Id && x.Deleted == false).ToListAsync(cancellationToken);
 
 				if (request.CostId != Guid.Empty)
 				{

@@ -1,31 +1,34 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BLL.CommandAndQueries.Plans.Queries;
-using MediatR;
-using SimpleBookKeeping.Database;
-using SimpleBookKeeping.Database.Entities;
-using SimpleBookKeeping.Exceptions;
-using SimpleBookKeeping.Models;
+﻿using AutoMapper;
+using BLL.DtoModels;
+using BLL.Exceptions;
+using BLL.Interfaces;
+using DAL.DbModels;
+using DAL.Repositories.Interfaces;
 
 namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 {
-	public class GetPlanQueryHandler : IRequestHandler<GetPlanQuery, PlanModel>
+	public class GetPlanQueryHandler : IQueryHandler<GetPlanQuery, PlanModel>
 	{
-		public PlanModel Handle(GetPlanQuery message)
+		private readonly IPlanRepository _planRepository;
+		private readonly IMapper _mapper;
+
+		public GetPlanQueryHandler(IPlanRepository planRepository, IMapper mapper)
 		{
-			PlanModel model;
-			using (var session = Db.Session)
+			_planRepository = planRepository;
+			_mapper = mapper;
+		}
+
+		public async Task<PlanModel> Handle(GetPlanQuery request, CancellationToken cancellationToken)
+		{
+			List<Plan> plans = await _planRepository
+				.GetAsync(p => p.Id == request.PlanId && p.Deleted == false).ToListAsync(cancellationToken);
+
+			if (!plans.Any())
 			{
-				var plans = session.QueryOver<Plan>()
-					.Where(p => p.Id == message.PlanId && p.Deleted == false).List();
-
-				if (!plans.Any())
-					throw new PlanNotFoundException($"Plan id: {message.PlanId}");
-
-				model = AutoMapperConfig.Mapper.Map<PlanModel>(plans.First());
+				throw new PlanNotFoundException($"Plan id: {request.PlanId.ToString()}");
 			}
 
-			return model;
+			return _mapper.Map<PlanModel>(plans.First());
 		}
 	}
 }

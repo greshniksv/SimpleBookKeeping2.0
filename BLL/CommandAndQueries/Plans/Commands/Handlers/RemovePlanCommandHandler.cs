@@ -1,30 +1,29 @@
-﻿using System.Linq;
-using BLL.CommandAndQueries.Plans.Commands;
-using MediatR;
-using SimpleBookKeeping.Database;
-using SimpleBookKeeping.Database.Entities;
+﻿using BLL.Interfaces;
+using DAL.DbModels;
+using DAL.Repositories.Interfaces;
 
 namespace BLL.CommandAndQueries.Plans.Commands.Handlers
 {
-	public class RemovePlanCommandHandler : IRequestHandler<RemovePlanCommand, bool>
+	public class RemovePlanCommandHandler : ICommandHandler<RemovePlanCommand, bool>
 	{
-		public bool Handle(RemovePlanCommand message)
+		private readonly IPlanRepository _planRepository;
+
+		public RemovePlanCommandHandler(IPlanRepository planRepository)
 		{
-			Plan plan;
-			using (var session = Db.Session)
+			_planRepository = planRepository;
+		}
+
+		public async Task<bool> Handle(RemovePlanCommand request, CancellationToken cancellationToken)
+		{
+			Plan plan = await _planRepository.GetByIdAsync(request.PlanId);
+			if (plan == null)
 			{
-				plan = session.QueryOver<Plan>().Where(p => p.Id == message.PlanId).List().FirstOrDefault();
-				if (plan == null)
-					return false;
+				return false;
 			}
 
-			using (var session = Db.Session)
-			using (var transaction = session.BeginTransaction())
-			{
-				plan.Deleted = true;
-				session.Update(plan);
-				transaction.Commit();
-			}
+			plan.Deleted = true;
+			_planRepository.Update(plan);
+			await _planRepository.SaveChangesAsync(true, cancellationToken);
 			return true;
 		}
 	}

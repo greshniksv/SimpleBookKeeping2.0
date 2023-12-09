@@ -1,4 +1,6 @@
-﻿using BLL.DtoModels;
+﻿using BLL.CommandAndQueries.Costs.Commands;
+using BLL.CommandAndQueries.Costs.Queries;
+using BLL.DtoModels;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +16,9 @@ namespace Application.Controllers
 		}
 
 		// GET: Cost
-		public ActionResult Index(Guid planId)
+		public async ActionResult Index(Guid planId)
 		{
-			IList<CostModel> costModels =
+			IList<CostModel> costModels = await 
 				_mediator.Send(new GetCostsQuery { PlanId = planId });
 
 			ViewBag.PlanId = planId;

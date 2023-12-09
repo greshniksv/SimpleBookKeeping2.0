@@ -1,71 +1,97 @@
-﻿using System;
-using System.Linq;
-using BLL.CommandAndQueries.Spends.Commands;
-using MediatR;
-using SimpleBookKeeping.Database;
-using SimpleBookKeeping.Database.Entities;
-using SimpleBookKeeping.Unility;
+﻿using BLL.Interfaces;
+using DAL.DbModels;
+using DAL.Interfaces;
+using DAL.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BLL.CommandAndQueries.Spends.Commands.Handlers
 {
-	public class SaveSpendCommandHandler : RequestHandler<SaveSpendCommand>
+	public class SaveSpendCommandHandler : ICommandHandler<SaveSpendCommand, bool>
 	{
-		/// <summary>Handles a void request</summary>
-		/// <param name="message">The request message</param>
-		protected override void HandleCore(SaveSpendCommand message)
-		{
-			if (!message.SpendModels.Any())
-				return;
+		private readonly IMainContext _mainContext;
+		private readonly ICostDetailRepository _costDetailRepository;
+		private readonly IUserRepository _userRepository;
+		private readonly ISpendRepository _spendRepository;
 
-			using (var session = Db.Session)
-			using (var transaction = session.BeginTransaction())
+		public SaveSpendCommandHandler(IMainContext mainContext, ICostDetailRepository costDetailRepository,
+			IUserRepository userRepository, ISpendRepository spendRepository)
+		{
+			_mainContext = mainContext;
+			_costDetailRepository = costDetailRepository;
+			_userRepository = userRepository;
+			_spendRepository = spendRepository;
+		}
+
+		/// <summary>Handles a void request</summary>
+		/// <param name="request">The request request</param>
+		/// <param name="cancellationToken"></param>
+		public async Task<bool> Handle(SaveSpendCommand request, CancellationToken cancellationToken)
+		{
+			if (!request.SpendModels.Any())
 			{
-				foreach (var spendModel in message.SpendModels)
+				return true;
+			}
+
+			await using IDbContextTransaction transaction = await _mainContext.BeginTransactionAsync(cancellationToken);
+
+			try
+			{
+				foreach (var spendModel in request.SpendModels)
+				{
 					if (spendModel.Id == null || spendModel.Id == Guid.Empty)
 					{
-						var costDetail =
-							session.QueryOver<CostDetail>().Where(x => x.Id == spendModel.CostDetailId).List().First();
+						CostDetail? costDetail = await _costDetailRepository.GetByIdAsync(spendModel.CostDetailId);
 
 						// New Spend
 						Spend spend = new Spend {
-							User = session.QueryOver<User>().Where(x => x.Id == message.UserId).List().First(),
+							User = await _userRepository.GetByIdAsync(request.UserId),
 							Comment = spendModel.Comment,
-							CostDetail = session.QueryOver<CostDetail>().Where(x => x.Id == spendModel.CostDetailId).List().First(),
+							CostDetail = costDetail,
 							Value = spendModel.Value,
 							OrderId = costDetail.Spends.Count,
 							Image = spendModel.Image
 						};
 
-						session.Save(spend);
+						await _spendRepository.InsertAsync(spend);
+						await _spendRepository.SaveChangesAsync(true, cancellationToken);
 					}
 					else
 					{
-						Spend oldSpend = session.QueryOver<Spend>().Where(x => x.Id == spendModel.Id).List().First();
+						Spend oldSpend = await _spendRepository.GetByIdAsync(spendModel.Id.Value);
 
 						if (spendModel.Value == 0 && spendModel.Comment == null)
 						{
-							if (!string.IsNullOrEmpty(oldSpend.Image))
-							{
-								ImageStorage storage = new ImageStorage();
-								storage.Delete(oldSpend.Image);
-							}
+							//if (!string.IsNullOrEmpty(oldSpend.Image))
+							//{
+							//	ImageStorage storage = new ImageStorage();
+							//	storage.Delete(oldSpend.Image);
+							//}
 
 							// Remove Spend
-							session.Delete(oldSpend);
+							await _spendRepository.DeleteAsync(oldSpend, true);
 						}
 						else
 						{
 							// Update Spend
-							oldSpend.User = session.QueryOver<User>().Where(x => x.Id == message.UserId).List().First();
+							oldSpend.User = await _userRepository.GetByIdAsync(request.UserId);
 							oldSpend.Comment = spendModel.Comment;
-							oldSpend.CostDetail = session.QueryOver<CostDetail>().Where(x => x.Id == spendModel.CostDetailId).List().First();
+							oldSpend.CostDetail = await _costDetailRepository.GetByIdAsync(spendModel.CostDetailId);
 							oldSpend.Value = spendModel.Value;
 
-							session.SaveOrUpdate(oldSpend);
+							_spendRepository.Update(oldSpend);
+							await _spendRepository.SaveChangesAsync(true, cancellationToken);
 						}
 					}
-				transaction.Commit();
+				}
+
+				await transaction.CommitAsync(cancellationToken);
 			}
+			catch (Exception e)
+			{
+				await transaction.RollbackAsync(cancellationToken);
+			}
+
+			return true;
 		}
 	}
 }
