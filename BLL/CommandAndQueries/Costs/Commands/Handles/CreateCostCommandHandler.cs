@@ -6,16 +6,16 @@ using DAL.Repositories.Interfaces;
 
 namespace BLL.CommandAndQueries.Costs.Commands.Handles
 {
-	public class CreateCostCommandHandler : ICommandHandler<CreateCostCommand, CostModel>
+	public class GenerateCostCommandHandler : ICommandHandler<GenerateCostCommand, CostModel>
 	{
 		private readonly IPlanRepository _planRepository;
 
-		public CreateCostCommandHandler(IPlanRepository planRepository)
+		public GenerateCostCommandHandler(IPlanRepository planRepository)
 		{
 			_planRepository = planRepository;
 		}
 
-		public async Task<CostModel> Handle(CreateCostCommand request, CancellationToken cancellationToken)
+		public async Task<CostModel> Handle(GenerateCostCommand request, CancellationToken cancellationToken)
 		{
 			Plan plan = await _planRepository.GetAsync(p => p.Id == request.PlanId).FirstAsync(cancellationToken);
 

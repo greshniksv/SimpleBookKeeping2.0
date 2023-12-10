@@ -1,6 +1,6 @@
-﻿using BLL.DtoModels;
-using DAL.DbModels;
+﻿using DAL.DbModels;
 using DAL.Interfaces;
+using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -20,7 +20,7 @@ namespace DAL.DbContexts
 			return this;
 		}
 
-		public List<CostStatusModel> CostList(Guid planId)
+		public CostStatusModel[] CostList(Guid planId)
 		{
 			throw new NotSupportedException();
 		}
@@ -57,10 +57,9 @@ namespace DAL.DbContexts
 		{
 			base.OnModelCreating(modelBuilder);
 			modelBuilder.HasPostgresExtension("uuid-ossp");
-			modelBuilder.HasDbFunction(typeof(MainContext).GetMethod(nameof(CostList),
-				new[] { typeof(List<CostStatusModel>) })).HasName("CostList");
-			modelBuilder.HasDbFunction(typeof(MainContext).GetMethod(nameof(SpendsSumByPlan),
-				new[] { typeof(int) })).HasName("SpendsSumByPlan");
+			var mm = typeof(MainContext).GetMethod(nameof(CostList));
+			//modelBuilder.HasDbFunction(mm).HasName("CostList");
+			modelBuilder.HasDbFunction(typeof(MainContext).GetMethod(nameof(SpendsSumByPlan))).HasName("SpendsSumByPlan");
 		}
 	}
 }

@@ -1,17 +1,22 @@
-﻿using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using BLL.Models.Interfaces;
+using Newtonsoft.Json;
+using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
 
 namespace BLL.Models
 {
-	public class HttpBaseResponse<TData>
+	public class HttpBaseResponse<TData> : IValidationError, ICommonError, ICommonReturn<TData>
 	{
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public TData Result { get; }
 
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public IReadOnlyList<ValidationErrorModel> Validation { get; }
 
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+		[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
 		public IReadOnlyList<ErrorModel> Errors { get; }
 
 		public HttpBaseResponse(TData data)

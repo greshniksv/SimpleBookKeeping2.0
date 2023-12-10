@@ -49,39 +49,37 @@ namespace BLL.CommandAndQueries.Costs.Commands.Handles
 
 			_mapper.Map(request.Cost, cost);
 
-			await using (IDbContextTransaction transaction = await _mainContext.BeginTransactionAsync(cancellationToken))
+			await using IDbContextTransaction transaction = await _mainContext.BeginTransactionAsync(cancellationToken);
+			try
 			{
-				try
+				await _costRepository.InsertAsync(cost);
+
+				// Remove old details
+				if (costDetails != null)
 				{
-					await _costRepository.InsertAsync(cost);
-
-					// Remove old details
-					if (costDetails != null)
+					foreach (var costDetail in costDetails)
 					{
-						foreach (var costDetail in costDetails)
-						{
-							costDetail.Cost = null;
-							await _costDetailRepository.DeleteAsync(costDetail.Id, true);
-						}
+						costDetail.Cost = null;
+						await _costDetailRepository.DeleteAsync(costDetail.Id, true);
 					}
-
-					// Insert new details
-					foreach (var costDetailModel in request.Cost.CostDetails)
-					{
-						var detail = new CostDetail();
-						_mapper.Map(costDetailModel, detail);
-						detail.Cost = cost;
-						await _costDetailRepository.InsertAsync(detail);
-					}
-
-					await _costDetailRepository.SaveChangesAsync(true, cancellationToken);
-					await transaction.CommitAsync(cancellationToken);
 				}
-				catch (Exception e)
+
+				// Insert new details
+				foreach (var costDetailModel in request.Cost.CostDetails)
 				{
-					await transaction.RollbackAsync(cancellationToken);
-					throw;
+					var detail = new CostDetail();
+					_mapper.Map(costDetailModel, detail);
+					detail.Cost = cost;
+					await _costDetailRepository.InsertAsync(detail);
 				}
+
+				await _costDetailRepository.SaveChangesAsync(true, cancellationToken);
+				await transaction.CommitAsync(cancellationToken);
+			}
+			catch (Exception e)
+			{
+				await transaction.RollbackAsync(cancellationToken);
+				throw;
 			}
 
 			return true;

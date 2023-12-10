@@ -1,18 +1,18 @@
+using System.Reflection;
 using System.Text;
 using System.Text.Json.Serialization;
 using Application;
 using Application.Extensions;
 using BLL.AutoMapperProfiles;
-using BLL.Constants;
+using BLL.Interfaces;
 using BLL.Options;
 using DAL.DbContexts;
 using DAL.Interfaces;
 using DAL.Models;
-using IdentityServer4.AspNetIdentity;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Certificate;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -45,6 +45,10 @@ builder.Services.AddControllers(options =>
 		x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 	}
 ).AddNewtonsoftJson(x => x.SerializerSettings.Converters.Add(new StringEnumConverter()));
+
+builder.Services.AddValidatorsFromAssembly(typeof(ICommand<>).Assembly);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddInternalServices();
 
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //	//.AddCertificate(options => options.AllowedCertificateTypes = CertificateTypes.All)
@@ -112,10 +116,11 @@ builder.Services.AddSwaggerGen(options =>
 		});
 
 	// Set the comments path for the Swagger JSON and UI.
-	//string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-	//string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-	//options.IncludeXmlComments(xmlPath);
-	//options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "BLL.xml"));
+	string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+	string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+	options.IncludeXmlComments(xmlPath);
+	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "BLL.xml"));
+	options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "DAL.xml"));
 });
 
 builder.Services.AddMediatR(serviceConfiguration =>

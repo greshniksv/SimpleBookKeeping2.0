@@ -1,4 +1,4 @@
-﻿namespace BLL.DtoModels
+﻿namespace DAL.Models
 {
     public class CostStatusModel
     {

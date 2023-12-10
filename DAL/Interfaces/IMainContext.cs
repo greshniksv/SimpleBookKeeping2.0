@@ -1,5 +1,5 @@
-﻿using BLL.DtoModels;
-using DAL.DbModels;
+﻿using DAL.DbModels;
+using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -12,7 +12,7 @@ namespace DAL.Interfaces
 	{
 		DbContext GetDbContext();
 
-		List<CostStatusModel> CostList(Guid planId);
+		CostStatusModel[] CostList(Guid planId);
 
 		int SpendsSumByPlan(Guid planId);
 

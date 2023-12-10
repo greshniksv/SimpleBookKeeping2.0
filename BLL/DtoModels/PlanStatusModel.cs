@@ -1,4 +1,6 @@
-﻿namespace BLL.DtoModels
+﻿using DAL.Models;
+
+namespace BLL.DtoModels
 {
     public class PlanStatusModel
     {

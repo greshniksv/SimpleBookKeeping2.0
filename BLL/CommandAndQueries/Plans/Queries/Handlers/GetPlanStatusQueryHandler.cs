@@ -3,6 +3,7 @@ using BLL.DtoModels;
 using BLL.Interfaces;
 using DAL.DbModels;
 using DAL.Interfaces;
+using DAL.Models;
 using DAL.Repositories.Interfaces;
 
 namespace BLL.CommandAndQueries.Plans.Queries.Handlers
@@ -42,7 +43,7 @@ namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 			planStatusModel.Name = plan.Name;
 			planStatusModel.Progress = passedDays * 100 / totalDays;
 
-			List<CostStatusModel> list = _mainContext.CostList(plan.Id);
+			CostStatusModel[] list = _mainContext.CostList(plan.Id);
 			int allSpends = _mainContext.SpendsSumByPlan(plan.Id);
 
 			//var list = session.CreateSQLQuery($"exec dbo.CostList @Plan='{plan.Id}'")
@@ -51,6 +52,7 @@ namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 			//	.AddScalar("Sum", NHibernateUtil.Int32).List<int>();
 
 			costStatusModels.AddRange(list.OrderBy(x => x.Name).ToList());
+
 			// Balance on start minus sum of planed costs
 			planStatusModel.Rest = plan.Balance - allSpends;
 			planStatusModel.Balance = costStatusModels.Sum(x => x.Balance);

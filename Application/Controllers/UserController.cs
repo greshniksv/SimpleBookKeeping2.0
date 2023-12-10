@@ -1,70 +1,51 @@
-using DAL.Models;
+using Asp.Versioning;
+using BLL.CommandAndQueries.Users.Queries;
+using BLL.DtoModels;
+using BLL.InternalServices.Interfaces;
+using BLL.Models;
+using BLL.Models.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers
 {
-	[ApiController]
 	[Authorize]
-	[Route("[controller]")]
+	[ApiController]
+	[ApiVersion("1.0")]
+	[Route("api/v{version:apiVersion}/[controller]")]
 	public class UserController : ControllerBase
 	{
-		private readonly Serilog.ILogger logger;
-		private readonly IMediator mediator;
+		private readonly IMediator _mediator;
+		private readonly IHttpContextService _httpContextService;
 
-		public UserController(
-			Serilog.ILogger logger,
-			IMediator mediator)
+		public UserController(IMediator mediator, IHttpContextService httpContextService)
 		{
-			this.logger = logger;
-			this.mediator = mediator;
+			_mediator = mediator;
+			_httpContextService = httpContextService;
 		}
 
-		[AllowAnonymous]
+		///  <summary>
+		///  Get list of Cost by plan
+		///  </summary>
+		///  <returns><see cref="ICommonReturn{T}"/> of <see cref="IList{T}"/> of <see cref="CostModel"/> </returns>
+		///  <remarks>
+		///  Sample request:
+		/// 		POST /api/v1/Cost/byPlan/{planId}
+		///  </remarks>
+		///  <response code="500">Internal error</response>
 		[HttpGet()]
-		public IActionResult Create()
+		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
+		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(
+			typeof(ICommonReturn<IList<UserModel>>), StatusCodes.Status200OK)]
+		[Produces("application/json")]
+		public async Task<IActionResult> List()
 		{
-			var _hasher = new PasswordHasher<ApplicationUser>();
-			var password = _hasher.HashPassword(new ApplicationUser() {
-				UserName = "admin"
-			}, "admin");
+			IReadOnlyList<UserModel> costModels = await _mediator.Send(new GetUsersQuery());
 
-			return StatusCode(StatusCodes.Status200OK, password);
+			return StatusCode(StatusCodes.Status200OK,
+				new HttpBaseResponse<IReadOnlyList<UserModel>>(costModels));
 		}
-
-		//[AllowAnonymous]
-		//[HttpPost()]
-		//public async Task<IActionResult> Create(CreateUserCommand model)
-		//{
-		//	int recordId = await mediator.Send(model);
-
-		//	logger.Information($"Created user: {recordId.ToString()}");
-		//	return StatusCode(StatusCodes.Status201Created, 
-		//		new HttpBaseResponse<object>(new { UserId = recordId }));
-		//}
-
-		//[AllowAnonymous]
-		//[HttpGet("{id:int}")]
-		//public async Task<IActionResult> Get(int id)
-		//{
-		//	UserModel? userModel = await mediator.Send(new GetUserQuery(id));
-
-		//	if (userModel == null)
-		//	{
-		//		return NotFound(new HttpBaseResponse<object>(new ErrorModel("User not found")));
-		//	}
-
-		//	return Ok(new HttpBaseResponse<UserModel>(userModel));
-		//}
-
-		//[AllowAnonymous]
-		//[HttpGet("{mail}")]
-		//public async Task<ActionResult> Notify(string mail)
-		//{
-		//	await mediator.Send(new SendMailNotify(mail));
-		//	return Ok();
-		//}
 	}
 }

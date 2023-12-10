@@ -1,11 +1,19 @@
-﻿using BLL.CommandAndQueries.Costs.Commands;
+﻿using Asp.Versioning;
+using BLL.CommandAndQueries.Costs.Commands;
 using BLL.CommandAndQueries.Costs.Queries;
 using BLL.DtoModels;
+using BLL.Models;
+using BLL.Models.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers
 {
+	[Authorize]
+	[ApiController]
+	[ApiVersion("1.0")]
+	[Route("api/v{version:apiVersion}/[controller]")]
 	public class CostController : Controller
 	{
 		private readonly IMediator _mediator;
@@ -15,54 +23,135 @@ namespace Application.Controllers
 			_mediator = mediator;
 		}
 
-		// GET: Cost
-		public async ActionResult Index(Guid planId)
+		///  <summary>
+		///  Get list of Cost by plan
+		///  </summary>
+		///  <param name="planId"></param>
+		///  <returns><see cref="ICommonReturn{T}"/> of <see cref="IList{T}"/> of <see cref="CostModel"/> </returns>
+		///  <remarks>
+		///  Sample request:
+		/// 		POST /api/v1/Cost/byPlan/{planId}
+		///  </remarks>
+		///  <response code="500">Internal error</response>
+		[HttpGet("byPlan")]
+		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
+		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(
+			typeof(ICommonReturn<IList<CostModel>>), StatusCodes.Status200OK)]
+		[Produces("application/json")]
+		public async Task<IActionResult> ListByPlan(Guid planId)
 		{
-			IList<CostModel> costModels = await 
-				_mediator.Send(new GetCostsQuery { PlanId = planId });
+			IList<CostModel> costModels = await _mediator.Send(new GetCostsQuery { PlanId = planId });
 
-			ViewBag.PlanId = planId;
-			return View("Index", costModels);
+			return StatusCode(StatusCodes.Status200OK,
+				new HttpBaseResponse<IList<CostModel>>(costModels));
 		}
 
-		public ActionResult Remove(Guid id)
+		///  <summary>
+		///  Get list of Cost
+		///  </summary>
+		///  <param name="costId"></param>
+		///  <returns><see cref="ICommonReturn{T}"/> of <see cref="CostModel"/> </returns>
+		///  <remarks>
+		///  Sample request:
+		/// 		POST /api/v1/Cost
+		///  </remarks>
+		///  <response code="500">Internal error</response>
+		[HttpGet()]
+		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
+		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(
+			typeof(ICommonReturn<CostModel>), StatusCodes.Status200OK)]
+		[Produces("application/json")]
+		public async Task<IActionResult> Item(Guid costId)
 		{
-			_mediator.Send(new RemoveCostCommand { CostId = id });
-			return new EmptyResult();
+			CostModel costModels = await _mediator.Send(new GetCostQuery { CostId = costId});
+
+			return StatusCode(StatusCodes.Status200OK,
+				new HttpBaseResponse<CostModel>(costModels));
 		}
 
-		public ActionResult Create(Guid planId)
+		///  <summary>
+		///  Remove Cost
+		///  </summary>
+		///  <param name="id"></param>
+		///  <remarks>
+		///  Sample request:
+		/// 		DELETE /api/v1/Cost
+		///  </remarks>
+		///  <response code="500">Internal error</response>
+		[HttpDelete()]
+		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
+		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(
+			typeof(ICommonReturn<IList<CostModel>>), StatusCodes.Status200OK)]
+		[Produces("application/json")]
+		public async Task<IActionResult> Remove(Guid id)
 		{
-			var model = _mediator.Send(new CreateCostCommand { PlanId = planId });
-			return View("View", model);
+			await _mediator.Send(new RemoveCostCommand { CostId = id });
+			return StatusCode(StatusCodes.Status200OK);
 		}
 
-		public ActionResult View(Guid id)
+		///  <summary>
+		///  Generate Cost with details
+		///  </summary>
+		///  <param name="planId"></param>
+		///  <remarks>
+		///  Sample request:
+		/// 		GET /api/v1/Cost/generate
+		///  </remarks>
+		///  <response code="500">Internal error</response>
+		[HttpGet("generate")]
+		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
+		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(
+			typeof(ICommonReturn<CostModel>), StatusCodes.Status200OK)]
+		[Produces("application/json")]
+		public async Task<IActionResult> Generate(Guid planId)
 		{
-			CostModel item = _mediator.Send(new GetCostQuery { CostId = id });
-			return View("View", item);
+			CostModel cost = await _mediator.Send(new GenerateCostCommand(){ PlanId = planId });
+			return StatusCode(StatusCodes.Status200OK,
+				new HttpBaseResponse<CostModel>(cost));
 		}
 
-		public ActionResult Save(CostModel model)
+		///  <summary>
+		///  Generate Cost with details
+		///  </summary>
+		///  <param name="model"></param>
+		///  <remarks>
+		///  Sample request:
+		/// 		GET /api/v1/Cost/generate
+		///  </remarks>
+		///  <response code="500">Internal error</response>
+		[HttpPost("generate")]
+		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
+		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(
+			typeof(ICommonReturn<CostModel>), StatusCodes.Status200OK)]
+		[Produces("application/json")]
+		public async Task<IActionResult> Save(CostModel model)
 		{
-			if (model.PlanId == Guid.Empty)
-			{
-				return RedirectToAction("Index", "Plan");
-			}
+			//if (model.PlanId == Guid.Empty)
+			//{
+			//	return RedirectToAction("Index", "Plan");
+			//}
 
 			foreach (var costDetailModel in model.CostDetails)
 			{
 				if (costDetailModel.Value == null)
+				{
 					costDetailModel.Value = 0;
+				}
 			}
 
-			if (ModelState.IsValid)
-			{
-				_mediator.Send(new SaveCostCommand { Cost = model });
-				return RedirectToAction("Index", new { planId = model.PlanId });
-			}
+			//if (ModelState.IsValid)
+			//{
+			//	//return RedirectToAction("Index", new { planId = model.PlanId });
+			//}
 
-			return View("View", model);
+			await _mediator.Send(new SaveCostCommand { Cost = model });
+
+			return StatusCode(StatusCodes.Status200OK);
 		}
 	}
 }
