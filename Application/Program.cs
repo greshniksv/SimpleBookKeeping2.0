@@ -143,10 +143,10 @@ builder.Services.AddDbContext<IdentityContext>(opt =>
 	.AddIdentity<ApplicationUser, ApplicationRole>(config =>
 	{
 		config.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789\\";
-		config.Password.RequireDigit = true;
-		config.Password.RequiredLength = 8;
-		config.Password.RequireLowercase = true;
-		config.Password.RequireUppercase = true;
+		config.Password.RequireDigit = false;
+		config.Password.RequiredLength = 3;
+		config.Password.RequireLowercase = false;
+		config.Password.RequireUppercase = false;
 		config.Password.RequireNonAlphanumeric = false;
 	})
 	.AddEntityFrameworkStores<IdentityContext>()
@@ -192,6 +192,7 @@ builder.Services.AddIdentityServer()
 //builder.Services.AddDbContext<MainContext>(opt => opt.UseInMemoryDatabase("TestDb"));
 builder.Services.AddAutoMapper(typeof(DbToViewModelProfile), typeof(CommandToDbModelProfile));
 builder.Services.AddRepositories();
+builder.Services.AddApiVersioning();
 
 // Register logger
 builder.Services.AddSingleton<Serilog.ILogger>(Log.Logger);

@@ -10,8 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers
 {
-	[Authorize]
-	[ApiController]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[ApiVersion("1.0")]
 	[Route("api/v{version:apiVersion}/[controller]")]
 	public class CostController : Controller

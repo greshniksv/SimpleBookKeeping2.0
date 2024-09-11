@@ -13,7 +13,7 @@ using BLL.CommandAndQueries.Credits.Commands;
 
 namespace Application.Controllers
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[ApiController]
 	[ApiVersion("1.0")]
 	[Route("api/v{version:apiVersion}/[controller]")]

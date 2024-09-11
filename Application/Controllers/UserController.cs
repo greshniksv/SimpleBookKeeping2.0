@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Controllers
 {
-	[Authorize]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	[ApiController]
 	[ApiVersion("1.0")]
 	[Route("api/v{version:apiVersion}/[controller]")]
