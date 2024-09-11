@@ -200,52 +200,6 @@ namespace DAL.Migrations
                     b.ToTable("spends", (string)null);
                 });
 
-            modelBuilder.Entity("DAL.DbModels.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("first_name");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_admin");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("last_name");
-
-                    b.Property<string>("Login")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("login");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("password");
-
-                    b.HasKey("Id")
-                        .HasName("pk_users");
-
-                    b.HasIndex("Login")
-                        .IsUnique()
-                        .HasDatabaseName("ix_users_login");
-
-                    b.ToTable("users", (string)null);
-                });
-
             modelBuilder.Entity("DAL.DbModels.Cost", b =>
                 {
                     b.HasOne("DAL.DbModels.Plan", "Plan")
@@ -270,18 +224,6 @@ namespace DAL.Migrations
                     b.Navigation("Cost");
                 });
 
-            modelBuilder.Entity("DAL.DbModels.Plan", b =>
-                {
-                    b.HasOne("DAL.DbModels.User", "User")
-                        .WithMany("Plans")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_plans_users_user_id");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("DAL.DbModels.PlanMember", b =>
                 {
                     b.HasOne("DAL.DbModels.Plan", "Plan")
@@ -291,16 +233,7 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_plan_members_plans_plan_id");
 
-                    b.HasOne("DAL.DbModels.User", "User")
-                        .WithMany("PlanMembers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_plan_members_users_user_id");
-
                     b.Navigation("Plan");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DAL.DbModels.Spend", b =>
@@ -312,16 +245,7 @@ namespace DAL.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_spends_cost_details_cost_detail_id");
 
-                    b.HasOne("DAL.DbModels.User", "User")
-                        .WithMany("Spends")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_spends_users_user_id");
-
                     b.Navigation("CostDetail");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("DAL.DbModels.Cost", b =>
@@ -339,15 +263,6 @@ namespace DAL.Migrations
                     b.Navigation("Costs");
 
                     b.Navigation("PlanMembers");
-                });
-
-            modelBuilder.Entity("DAL.DbModels.User", b =>
-                {
-                    b.Navigation("PlanMembers");
-
-                    b.Navigation("Plans");
-
-                    b.Navigation("Spends");
                 });
 #pragma warning restore 612, 618
         }

@@ -30,7 +30,6 @@ namespace DAL.DbContexts
 			throw new NotSupportedException();
 		}
 
-		public DbSet<User> Users { get; set; }
 		public DbSet<Spend> Spends { get; set; }
 		public DbSet<PlanMember> PlanMembers { get; set; }
 		public DbSet<Plan> Plans { get; set; }

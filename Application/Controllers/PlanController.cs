@@ -114,7 +114,7 @@ namespace Application.Controllers
 		[ProducesResponseType(
 			typeof(ICommonReturn<PlanModel>), StatusCodes.Status200OK)]
 		[Produces("application/json")]
-		public async Task<IActionResult> Create(PlanModel model)
+		public async Task<IActionResult> Create([FromBody]PlanModel model)
 		{
 			Guid userId = _httpContextService.GetCurrentUserId();
 			if (model.Start == DateTime.MinValue && model.End == DateTime.MinValue)
@@ -159,7 +159,7 @@ namespace Application.Controllers
 				UserId = userId
 			});
 
-			IReadOnlyList<UserModel> users = await _mediator.Send(new GetUsersQuery());
+			//IReadOnlyList<UserModel> users = await _mediator.Send(new GetUsersQuery());
 
 			return StatusCode(StatusCodes.Status200OK);
 		}

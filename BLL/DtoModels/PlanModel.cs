@@ -20,6 +20,6 @@ namespace BLL.DtoModels
         [Range(1,5000000,ErrorMessage = "Баланс может быть от 1 до 5'000'000")]
         public int Balance { get; set; }
 
-        public IList<Guid> UserMembers { get; set; }
+        public List<Guid> UserMembers { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace BLL.CommandAndQueries.Spends.Queries.Handlers
 
 			List<Spend> items =
 				await _repository.GetAsync(x =>
-						x.User.Id == request.UserId &&
+						x.UserId == request.UserId &&
 						x.CostDetail.Cost.Id == request.CostId)
 					.ToListAsync(cancellationToken);
 

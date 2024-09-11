@@ -1,7 +1,9 @@
 ﻿using BLL.Interfaces;
 using DAL.DbModels;
 using DAL.Interfaces;
+using DAL.Models;
 using DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BLL.CommandAndQueries.Spends.Commands.Handlers
@@ -10,11 +12,11 @@ namespace BLL.CommandAndQueries.Spends.Commands.Handlers
 	{
 		private readonly IMainContext _mainContext;
 		private readonly ICostDetailRepository _costDetailRepository;
-		private readonly IUserRepository _userRepository;
+		private readonly UserManager<ApplicationUser> _userRepository;
 		private readonly ISpendRepository _spendRepository;
 
 		public SaveSpendCommandHandler(IMainContext mainContext, ICostDetailRepository costDetailRepository,
-			IUserRepository userRepository, ISpendRepository spendRepository)
+			UserManager<ApplicationUser> userRepository, ISpendRepository spendRepository)
 		{
 			_mainContext = mainContext;
 			_costDetailRepository = costDetailRepository;
@@ -44,7 +46,7 @@ namespace BLL.CommandAndQueries.Spends.Commands.Handlers
 
 						// New Spend
 						Spend spend = new Spend {
-							User = await _userRepository.GetByIdAsync(request.UserId),
+							UserId = ((await _userRepository.FindByIdAsync(request.UserId.ToString()))!).Id,
 							Comment = spendModel.Comment,
 							CostDetail = costDetail,
 							Value = spendModel.Value,
@@ -73,7 +75,7 @@ namespace BLL.CommandAndQueries.Spends.Commands.Handlers
 						else
 						{
 							// Update Spend
-							oldSpend.User = await _userRepository.GetByIdAsync(request.UserId);
+							oldSpend.UserId = ((await _userRepository.FindByIdAsync(request.UserId.ToString()))!).Id;
 							oldSpend.Comment = spendModel.Comment;
 							oldSpend.CostDetail = await _costDetailRepository.GetByIdAsync(spendModel.CostDetailId);
 							oldSpend.Value = spendModel.Value;

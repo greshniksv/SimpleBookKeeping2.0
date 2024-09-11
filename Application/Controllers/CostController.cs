@@ -114,7 +114,7 @@ namespace Application.Controllers
 		}
 
 		///  <summary>
-		///  Generate Cost with details
+		///  Save Cost with details
 		///  </summary>
 		///  <param name="model"></param>
 		///  <remarks>
@@ -122,13 +122,13 @@ namespace Application.Controllers
 		/// 		GET /api/v1/Cost/generate
 		///  </remarks>
 		///  <response code="500">Internal error</response>
-		[HttpPost("generate")]
+		[HttpPost("save")]
 		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
 		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(
 			typeof(ICommonReturn<CostModel>), StatusCodes.Status200OK)]
 		[Produces("application/json")]
-		public async Task<IActionResult> Save(CostModel model)
+		public async Task<IActionResult> Save([FromBody]CostModel model)
 		{
 			//if (model.PlanId == Guid.Empty)
 			//{

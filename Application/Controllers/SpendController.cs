@@ -68,7 +68,7 @@ namespace Application.Controllers
 		[ProducesResponseType(
 			typeof(ICommonReturn<IList<PlanStatusModel>>), StatusCodes.Status200OK)]
 		[Produces("application/json")]
-		public async Task<IActionResult> Create(AddSpendModel model)
+		public async Task<IActionResult> Create([FromBody] AddSpendModel model)
 		{
 			Guid userId = _httpContextService.GetCurrentUserId();
 			await _mediator.Send(new SaveSpendCommand {
@@ -94,7 +94,7 @@ namespace Application.Controllers
 		[ProducesResponseType(
 			typeof(ICommonReturn<IList<PlanStatusModel>>), StatusCodes.Status200OK)]
 		[Produces("application/json")]
-		public async Task<IActionResult> Update(List<AddSpendModel> addSpendModels)
+		public async Task<IActionResult> Update([FromBody] List<AddSpendModel> addSpendModels)
 		{
 			Guid userId = _httpContextService.GetCurrentUserId();
 			await _mediator.Send(new SaveSpendCommand { SpendModels = addSpendModels, UserId = userId });

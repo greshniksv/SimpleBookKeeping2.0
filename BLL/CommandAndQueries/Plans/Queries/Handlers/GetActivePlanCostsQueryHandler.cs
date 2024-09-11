@@ -28,10 +28,10 @@ namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 			List<PlanCostsModel> planCostsModels = new();
 			List<Plan> plans = new List<Plan>();
 			List<Plan> plansByCreator =
-				await _planRepository.GetAsync(x => x.User.Id == request.UserId && x.Deleted == false).ToListAsync(cancellationToken);
+				await _planRepository.GetAsync(x => x.UserId == request.UserId && x.Deleted == false).ToListAsync(cancellationToken);
 			IEnumerable<Plan> plansByMember =
 				(await _memberRepository.GetAsync(x =>
-					x.User.Id == request.UserId, null, $"{nameof(PlanMember.Plan)}").ToListAsync(cancellationToken))
+					x.UserId == request.UserId, null, $"{nameof(PlanMember.Plan)}").ToListAsync(cancellationToken))
 				.Select(x => x.Plan);
 
 			plans.AddRange(plansByCreator);

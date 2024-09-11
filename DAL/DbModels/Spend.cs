@@ -9,8 +9,6 @@ namespace DAL.DbModels
 	{
 		public Guid UserId { get; set; }
 
-		public User User { get; set; }
-
 		public Guid CostDetailId { get; set; }
 
 		public CostDetail CostDetail { get; set; }

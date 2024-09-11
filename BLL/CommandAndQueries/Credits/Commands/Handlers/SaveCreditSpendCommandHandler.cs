@@ -1,7 +1,9 @@
 ﻿using BLL.Interfaces;
 using DAL.DbModels;
 using DAL.Interfaces;
+using DAL.Models;
 using DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BLL.CommandAndQueries.Credits.Commands.Handlers
@@ -9,12 +11,12 @@ namespace BLL.CommandAndQueries.Credits.Commands.Handlers
 	public class SaveCreditSpendCommandHandler : ICommandHandler<SaveCreditSpendCommand, bool>
 	{
 		private readonly ICostDetailRepository _costDetailRepository;
-		private readonly IUserRepository _userRepository;
+		private readonly UserManager<ApplicationUser> _userRepository;
 		private readonly ISpendRepository _spendRepository;
 		private readonly IMainContext _mainContext;
 
 		public SaveCreditSpendCommandHandler(ICostDetailRepository costDetailRepository,
-			IUserRepository userRepository, ISpendRepository spendRepository, IMainContext mainContext)
+			UserManager<ApplicationUser> userRepository, ISpendRepository spendRepository, IMainContext mainContext)
 		{
 			_costDetailRepository = costDetailRepository;
 			_userRepository = userRepository;
@@ -74,8 +76,7 @@ namespace BLL.CommandAndQueries.Credits.Commands.Handlers
 						{
 							// New Spend
 							Spend spend = new Spend {
-								User = await _userRepository.GetAsync(x =>
-									x.Id == request.UserId).FirstAsync(cancellationToken),
+								UserId = ((await _userRepository.FindByIdAsync(request.UserId.ToString()))!).Id,
 								Comment = spendModel.Comment,
 								CostDetail = await _costDetailRepository.GetAsync(x =>
 									x.Id == costDetailItem.Id).FirstAsync(cancellationToken),
@@ -98,8 +99,7 @@ namespace BLL.CommandAndQueries.Credits.Commands.Handlers
 							else
 							{
 								// Update Spend
-								oldSpend.User = await _userRepository.GetAsync(x =>
-									x.Id == request.UserId).FirstAsync(cancellationToken);
+								oldSpend.UserId = ((await _userRepository.FindByIdAsync(request.UserId.ToString()))!).Id;
 								oldSpend.Comment = spendModel.Comment;
 								oldSpend.CostDetail = await _costDetailRepository.GetAsync(x =>
 									x.Id == costDetailItem.Id).FirstAsync(cancellationToken);

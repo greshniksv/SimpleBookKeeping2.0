@@ -17,8 +17,6 @@ namespace DAL.DbModels
 
 		public Guid UserId { get; set; }
 
-		public User User { get; set; }
-
 		public bool Deleted { get; set; }
 
 		public ICollection<PlanMember> PlanMembers { get; set; }

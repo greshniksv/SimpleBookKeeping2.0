@@ -16,7 +16,6 @@ namespace DAL.Interfaces
 
 		int SpendsSumByPlan(Guid planId);
 
-		DbSet<User> Users { get; set; }
 		DbSet<Spend> Spends { get; set; }
 		DbSet<PlanMember> PlanMembers { get; set; }
 		DbSet<Plan> Plans { get; set; }

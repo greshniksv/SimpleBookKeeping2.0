@@ -1,17 +1,20 @@
 ﻿using AutoMapper;
 using DAL.DbModels;
+using DAL.Models;
 using DAL.Repositories.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using UserModel = BLL.DtoModels.UserModel;
 
 namespace BLL.CommandAndQueries.Users.Queries.Handlers
 {
 	public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IReadOnlyList<UserModel>>
 	{
-		private readonly IUserRepository _userRepository;
+		private readonly UserManager<ApplicationUser> _userRepository;
 		private readonly IMapper _mapper;
 
-		public GetUsersQueryHandler(IUserRepository userRepository, IMapper mapper)
+		public GetUsersQueryHandler(UserManager<ApplicationUser> userRepository, IMapper mapper)
 		{
 			_userRepository = userRepository;
 			_mapper = mapper;
@@ -23,15 +26,15 @@ namespace BLL.CommandAndQueries.Users.Queries.Handlers
 		/// <returns>Response from the request</returns>
 		public async Task<IReadOnlyList<UserModel>> Handle(GetUsersQuery message, CancellationToken cancellationToken)
 		{
-			List<User> users;
+			List<ApplicationUser> users;
 
 			if (message.UsersId != null)
 			{
-				users = await _userRepository.GetAsync(x => message.UsersId.Contains(x.Id)).ToListAsync(cancellationToken);
+				users = await _userRepository.Users.Where(x => message.UsersId.Contains(x.Id)).ToListAsync(cancellationToken);
 			}
 			else
 			{
-				users = await _userRepository.GetAsync().ToListAsync(cancellationToken);
+				users = await _userRepository.Users.ToListAsync(cancellationToken);
 			}
 
 			IList<UserModel> userModels = _mapper.Map<IList<UserModel>>(users);

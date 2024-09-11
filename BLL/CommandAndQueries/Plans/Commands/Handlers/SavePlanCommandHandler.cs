@@ -2,20 +2,23 @@
 using BLL.Interfaces;
 using DAL.DbModels;
 using DAL.Interfaces;
+using DAL.Models;
 using DAL.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BLL.CommandAndQueries.Plans.Commands.Handlers
 {
 	public class SavePlanCommandHandler : ICommandHandler<SavePlanCommand, bool>
 	{
-		private readonly IUserRepository _userRepository;
+		private readonly UserManager<ApplicationUser> _userRepository;
 		private readonly IPlanRepository _planRepository;
 		private readonly IPlanMemberRepository _planMemberRepository;
 		private readonly IMapper _mapper;
 		private readonly IMainContext _mainContext;
 
-		public SavePlanCommandHandler(IUserRepository userRepository, IPlanRepository planRepository,
+		public SavePlanCommandHandler(UserManager<ApplicationUser> userRepository, IPlanRepository planRepository,
 			IPlanMemberRepository planMemberRepository, IMapper mapper, IMainContext mainContext)
 		{
 			_userRepository = userRepository;
@@ -31,16 +34,18 @@ namespace BLL.CommandAndQueries.Plans.Commands.Handlers
 		/// <returns>Response from the request</returns>
 		public async Task<bool> Handle(SavePlanCommand message, CancellationToken cancellationToken)
 		{
+			bool exist = true;
 			IList<PlanMember> existingPlanMembers = null;
-			IList<User> users = await _userRepository.GetAsync().ToListAsync(cancellationToken);
+			IList<ApplicationUser> users = await _userRepository.Users.ToListAsync(cancellationToken);
 
 			Plan plan = await _planRepository.GetByIdAsync(message.PlanModel.Id);
-			User? currentUser = await _userRepository.GetByIdAsync(message.UserId);
+			ApplicationUser? currentUser = await _userRepository.FindByIdAsync(message.UserId.ToString());
 
 			if (plan == null)
 			{
+				exist = false;
 				plan = new Plan {
-					User = currentUser
+					UserId = currentUser.Id
 				};
 			}
 			else
@@ -60,7 +65,15 @@ namespace BLL.CommandAndQueries.Plans.Commands.Handlers
 				{
 					// Add plan
 					//session.SaveOrUpdate(plan);
-					_planRepository.Update(plan);
+					if (exist)
+					{
+						await _planRepository.InsertAsync(plan);
+					}
+					else
+					{
+						_planRepository.Update(plan);
+					}
+
 					await _planRepository.SaveChangesAsync(true, cancellationToken);
 
 					// Remove old plan members
@@ -68,7 +81,7 @@ namespace BLL.CommandAndQueries.Plans.Commands.Handlers
 					{
 						foreach (var existingPlanMember in existingPlanMembers)
 						{
-							existingPlanMember.User = null;
+							existingPlanMember.UserId = Guid.Empty;
 							existingPlanMember.Plan = null;
 							await _planMemberRepository.DeleteAsync(existingPlanMember, true);
 						}
@@ -77,8 +90,8 @@ namespace BLL.CommandAndQueries.Plans.Commands.Handlers
 					// Add plan members
 					foreach (var userMember in message.PlanModel.UserMembers)
 					{
-						User user = users.First(x => x.Id == userMember);
-						await _planMemberRepository.InsertAsync(new PlanMember { User = user, Plan = plan });
+						ApplicationUser user = users.First(x => x.Id == userMember);
+						await _planMemberRepository.InsertAsync(new PlanMember { UserId = user.Id, Plan = plan });
 						await _planMemberRepository.SaveChangesAsync(true, cancellationToken);
 					}
 

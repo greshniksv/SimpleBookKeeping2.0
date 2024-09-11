@@ -68,7 +68,7 @@ namespace Application.Controllers
 		[ProducesResponseType(
 			typeof(ICommonReturn<IList<PlanStatusModel>>), StatusCodes.Status200OK)]
 		[Produces("application/json")]
-		public async Task<IActionResult> Create(AddCreditSpendModel model)
+		public async Task<IActionResult> Create([FromBody] AddCreditSpendModel model)
 		{
 			Guid userId = _httpContextService.GetCurrentUserId();
 			 await _mediator.Send(new SaveCreditSpendCommand {

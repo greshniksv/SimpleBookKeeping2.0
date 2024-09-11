@@ -32,7 +32,7 @@ namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 
 			List<Plan> plans = new List<Plan>();
 			IQueryable<Plan> planQuery = _mainContext.Plans.AsQueryable();
-			planQuery = planQuery.Where(x => x.User.Id == request.UserId);
+			planQuery = planQuery.Where(x => x.UserId == request.UserId);
 
 			if (request.ShowDeleted != null)
 			{
@@ -48,8 +48,8 @@ namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 			plans.AddRange(await planQuery.ToListAsync(cancellationToken));
 			List<Plan> planByMember =
 				await _memberRepository.GetAsync(x =>
-					x.User.Id == request.UserId, null,
-						$"{nameof(PlanMember.User)},{nameof(PlanMember.Plan)}")
+					x.UserId == request.UserId, null,
+						$"{nameof(PlanMember.Plan)}")
 					.Select(x => x.Plan)
 					.ToListAsync(cancellationToken);
 
