@@ -20,6 +20,7 @@ using Newtonsoft.Json.Converters;
 using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 IConfigurationRoot configuration = new ConfigurationBuilder()
 	.SetBasePath(Directory.GetCurrentDirectory())
@@ -49,6 +50,15 @@ builder.Services.AddControllers(options =>
 builder.Services.AddValidatorsFromAssembly(typeof(ICommand<>).Assembly);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddInternalServices();
+
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy(name: MyAllowSpecificOrigins,
+		policy =>
+		{
+			policy.WithOrigins("https://localhost", "https://127.0.0.1", "https://localhost:7061");
+		});
+});
 
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //	//.AddCertificate(options => options.AllowedCertificateTypes = CertificateTypes.All)
@@ -225,6 +235,7 @@ mainContext.GetDatabase().Migrate();
 IIdentityContext identityContext = scope.ServiceProvider.GetRequiredService<IIdentityContext>();
 identityContext.GetDatabase().Migrate();
 
+app.UseCors(MyAllowSpecificOrigins);
 app.UseRouting();
 app.UseIdentityServer();
 app.ConfigureExceptionHandler(Log.Logger);
