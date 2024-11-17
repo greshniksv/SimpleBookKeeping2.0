@@ -1,35 +1,41 @@
 ﻿class Auth {
 
-    getToken() {
+    constructor() {
+        this.Token = null;
+    }
 
-        /*
-         POST /connect/token
-CONTENT-TYPE application/x-www-form-urlencoded
-
-    client_id=client1&
-    client_secret=secret&
-    grant_type=client_credentials&
-    scope=scope1
-         */
+    getToken(userName, password) {
 
         $.ajax({
-            url: BASE_HOST +'/connect/token',
+            url: BASE_HOST + '/connect/token',
             method: 'post',
             dataType: 'json',
             contentType: "application/x-www-form-urlencoded; charset=utf-8",
-            data: "grant_type=password&username=admin&password=admin&client_id=client",
+            data: "grant_type=password&username=" + userName + "&password=" + password + "&client_id=client",
             success: function (data) {
-                alert(data);    /* выведет "Текст" */
-                
+                this.Token = data;
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert(data);
-
+                // xhr.status - status code
+                alert("Error AUTH: " + xhr + "Code:" + xhr.status);
             }
         });
     }
 
-    sayHi() {
-        alert("Hello world!");
+    refreshToken() {
+        $.ajax({
+            url: BASE_HOST + '/connect/token',
+            method: 'post',
+            dataType: 'json',
+            contentType: "application/x-www-form-urlencoded; charset=utf-8",
+            data: "grant_type=refresh_token&client_id=client&refresh_token=" + this.Token.refresh_token,
+            success: function (data) {
+                this.Token = data;
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                // xhr.status - status code
+                alert("Error AUTH: " + xhr + "Code:" + xhr.status);
+            }
+        });
     }
 }
