@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="src\images\" />
+    <Folder Include="src\styles\" />
   </ItemGroup>
 
 </Project>

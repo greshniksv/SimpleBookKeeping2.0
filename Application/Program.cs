@@ -56,7 +56,7 @@ builder.Services.AddCors(options =>
 	options.AddPolicy(name: MyAllowSpecificOrigins,
 		policy =>
 		{
-			policy.WithOrigins("https://localhost", "https://127.0.0.1", "https://localhost:7061");
+			policy.WithOrigins("https://localhost", "https://127.0.0.1", "https://localhost:7061", "https://localhost:5033");
 		});
 });
 
