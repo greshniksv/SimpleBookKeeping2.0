@@ -20,11 +20,48 @@
                 opacity: .6,
                 color: '#fff'
             }
-        }); 
+        });
     }
 
     static HideLoading() {
         $.unblockUI();
     }
 
+    static SwichDialog(id) {
+
+        var activeDialog = $(".dialog:visible").first();
+        var width = $(window).width() + 10;
+        var newDialog = $("#" + id);
+
+        newDialog.css('left', '-' + width + 'px');
+        newDialog.css('position', 'absolute');
+        newDialog.css('width', width+"px");
+
+        newDialog.show();
+
+        activeDialog.css('position', 'absolute');
+        activeDialog.css('top', '60px');
+        activeDialog.css('left', '0px');
+        activeDialog.css('width', width + "px");
+
+
+        activeDialog.animate({
+            left: width
+        }, 'slow', function () {
+            activeDialog.hide();
+            activeDialog.css('position', 'relative');
+            activeDialog.css('top', 'auto');
+            activeDialog.css('left', 'auto');
+            activeDialog.css('width', "auto");
+        });
+
+        newDialog.animate({
+            left: 0
+        }, 'slow', function () {
+            newDialog.css('position', 'relative');
+            newDialog.css('top', 'auto');
+            newDialog.css('left', 'auto');
+            newDialog.css('width', "auto");
+        });
+    }
 }

@@ -13,75 +13,76 @@
     <title>Main</title>
 </head>
 <body>
-    
-<style>
-    html,
-    body {
-        height: 100%;
-    }
 
-    body {
-        background-color: #373737;
-    }
+    <style>
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
 
-    footer {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-    }
+        body {
+            background-color: #373737;
+        }
 
-    .footer-menu li:last-child {
-        margin-left: auto;
-        margin-right: 0;
-        color: white;
-    }
-
-    .footer-menu li:last-child a {
-        color: white;
-    }
-
-    .dialog {
-        display: none;
-    }
-
-    .loader {
-        width: 48px;
-        height: 48px;
-        border: 3px solid #FFF;
-        border-radius: 50%;
-        display: inline-block;
-        position: relative;
-        box-sizing: border-box;
-        animation: rotation 1s linear infinite;
-    }
-
-        .loader::after {
-            content: '';
-            box-sizing: border-box;
+        footer {
             position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer-menu li:last-child {
+            margin-left: auto;
+            margin-right: 0;
+            color: white;
+        }
+
+            .footer-menu li:last-child a {
+                color: white;
+            }
+
+        .dialog {
+            display: none;
+            position: relative;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #FFF;
             border-radius: 50%;
-            border: 3px solid;
-            border-color: #FF3D00 transparent;
+            display: inline-block;
+            position: relative;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
         }
 
-    @keyframes rotation {
-        0% {
-            transform: rotate(0deg);
+            .loader::after {
+                content: '';
+                box-sizing: border-box;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                border: 3px solid;
+                border-color: #FF3D00 transparent;
+            }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
+    </style>
 
-        100% {
-            transform: rotate(360deg);
-        }
-    } 
-
-</style>
-
-<div data-role="page">
+    <div data-role="page">
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
@@ -128,19 +129,20 @@
 
         <div class="content">
             <div class="dialog" style="display:block" id="auth_dialog"></div>
+            <div class="dialog" id="home_dialog"></div>
             <div class="dialog" id="cost_dialog"></div>
         </div>
     </div>
-    
-<footer class="text-center bg-dark">
-    <div class="container pt-3">
-        <ul class="nav nav-pills footer-menu">
-            <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Назад</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Admin</a></li>
-        </ul>
-        <br/>
-    </div>
-</footer>
+
+    <footer class="text-center bg-dark">
+        <div class="container pt-3">
+            <ul class="nav nav-pills footer-menu">
+                <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Назад</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Admin</a></li>
+            </ul>
+            <br />
+        </div>
+    </footer>
 
 </body>
 </html>
@@ -152,13 +154,31 @@
 
 <script>
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         //var a = new Auth();
         //a.getToken("admin", "admin",);
 
         $("#auth_dialog").load("/main/dialogs/auth.html");
-
+        $("#home_dialog").load("/main/dialogs/home.html");
 
     });
+
+    function Anim(id) {
+
+
+        var width = $(window).width();
+        $("#" + id).css('left', '-' + width + 'px');
+        $("#" + id).show();
+
+        $(".dialog:visible").first().animate({
+            left: width
+        }, 'slow');
+
+        $("#" + id).animate({
+            left: 0
+        }, 'slow');
+
+
+    }
 
 </script>
