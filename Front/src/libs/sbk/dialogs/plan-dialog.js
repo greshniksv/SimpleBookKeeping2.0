@@ -6,6 +6,9 @@
         console.log("Init plan");
     }
 
+    static GoToNewPlan() {
+        Tools.SwichDialog("new_plan_dialog");
+    }
   
 }
 

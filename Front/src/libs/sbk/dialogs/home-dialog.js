@@ -6,14 +6,10 @@
         console.log("Init home");
 
         $('.navbar-nav>li>a:not([data-bs-toggle^="dropdown"])').on('click', function (i, v) {
-
-            debugger;
             $('.navbar-collapse').collapse('hide');
         });
 
         $('.dropdown-menu>li>a:not([data-bs-toggle^="dropdown"])').on('click', function (i, v) {
-
-            debugger;
             $('.navbar-collapse').collapse('hide');
         });
 

@@ -1,0 +1,85 @@
+﻿
+<style>
+
+    .select2-selection__choice {
+        color: wheat !important;
+    }
+
+    .select2-results__option {
+        color: wheat !important;
+    }
+
+    /* Change the appearence of the bakground colour surrounding the search input field */
+    .select2-search {
+        background-color: #343A40 !important;
+    }
+        /* Change the appearence of the search input field */
+        .select2-search input {
+            color: #ffffff !important;
+            background-color: #343A40 !important;
+        }
+
+    /* Change the appearence of the search results container */
+    .select2-results {
+        background-color: #343A40 !important;
+    }
+
+    /* Change the appearence of the dropdown select container */
+    .select2-container--bootstrap-5 .select2-selection {
+        border-color: #6c757d !important;
+        color: #ffffff !important;
+        background-color: #343A40 !important;
+    }
+
+    /* Change the caret down arrow symbol to white */
+    .select2-container--bootstrap-5 .select2-selection--single {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+    }
+
+        /* Change the color of the default selected item i.e. the first option */
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+            color: #ffffff !important;
+        }
+
+</style>
+
+<div class="form-control">
+    <input type="hidden" name="id" />
+
+    <div class="mb-3">
+        <label for="newplan_name" class="form-label">Название</label>
+        <input type="text" class="form-control" id="newplan_name" aria-describedby="newplan_name_help">
+        <div id="newplan_name_help" class="form-text">We'll never share your email with anyone else.</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="newplan_start" class="form-label">Начало</label>
+        <input type="text" data-provide="datepicker" data-date-format="dd/mm/yyyy" class="datepicker form-control" id="newplan_start" aria-describedby="newplan_start_help">
+        <div id="newplan_start_help" class="form-text">We'll never share your email with anyone else.</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="newplan_end" class="form-label">Завершение</label>
+        <input type="text" data-provide="datepicker" data-date-format="dd/mm/yyyy" class="datepicker form-control" id="newplan_end" aria-describedby="newplan_end_help">
+        <div id="newplan_end_help" class="form-text">We'll never share your email with anyone else.</div>
+    </div>
+
+    <div class="mb-3">
+        <label for="newplan_balance" class="form-label">Сумма</label>
+        <input type="number" class="form-control" id="newplan_balance" aria-describedby="newplan_balance_help">
+        <div id="newplan_balance_help" class="form-text">We'll never share your email with anyone else.</div>
+    </div>
+
+    <select class="form-select" id="multiple-select-field" data-placeholder="Choose anything" multiple>
+        <option>Christmas Island</option>
+        <option>South Sudan</option>
+        <option>Czech Republic</option>
+        <option>Russia</option>
+    </select>
+
+    <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</div>

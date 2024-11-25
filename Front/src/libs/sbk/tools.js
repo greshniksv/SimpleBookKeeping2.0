@@ -80,7 +80,7 @@
 
         Session.CurrentPage = pageName;
         var dialogs = Session.Dialogs;
-        for (let i; i < dialogs.length; i++) {
+        for (let i=0; i < dialogs.length; i++) {
             if (dialogs[i].name == pageName) {
                 dialogs[i].Init();
                 break;
