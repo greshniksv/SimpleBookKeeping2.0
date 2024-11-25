@@ -1,4 +1,6 @@
-﻿class AuthDialog {
+﻿class AuthDialog extends DialogBase {
+
+    static name = "auth_dialog";
 
     static Show() {
         $.blockUI({
@@ -14,7 +16,6 @@
 
         var onSuccess = function () {
             Tools.SwichDialog("home_dialog");
-            HomeDialog.Init();
         };
 
         var onError = function () {
@@ -22,10 +23,11 @@
             $("#auth_button").show();
         };
 
-        var auth = new Auth();
-        auth.getToken(username, password, onSuccess, onError);
+        Auth.getToken(username, password, onSuccess, onError);
 
         $("#auth_loader").show();
         $("#auth_button").hide();
     }
 }
+
+Tools.AddDialog(AuthDialog);

@@ -41,7 +41,7 @@ namespace Application.Controllers
 		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
 		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(
-			typeof(ICommonReturn<IList<PlanStatusModel>>), StatusCodes.Status200OK)]
+			typeof(ICommonReturn<IList<PlanModel>>), StatusCodes.Status200OK)]
 		[Produces("application/json")]
 		public async Task<IActionResult> Get()
 		{

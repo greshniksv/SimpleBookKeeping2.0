@@ -13,6 +13,7 @@ namespace DAL.DbContexts
 		public MainContext(DbContextOptions<MainContext> options)
 			: base(options)
 		{
+			AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 		}
 
 		public DbContext GetDbContext()

@@ -1,6 +1,6 @@
 ﻿class Auth {
 
-    getToken(userName, password, onSuccess, onError) {
+    static getToken(userName, password, onSuccess, onError) {
 
         $.ajax({
             url: BASE_HOST + '/connect/token',
@@ -27,7 +27,7 @@
         });
     }
 
-    refreshToken(onSuccess, onError) {
+    static refreshToken(onSuccess, onError) {
 
         var data = JSON.parse(localStorage.getItem('auth'));
 

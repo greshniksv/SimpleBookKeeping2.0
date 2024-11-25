@@ -1,1 +1,1 @@
-﻿var BASE_HOST = "https://localhost:6001"
+﻿var BASE_HOST = "https://localhost:6001/api"

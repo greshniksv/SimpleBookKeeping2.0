@@ -1,4 +1,13 @@
 ﻿class Tools {
+
+    static AddDialog(dialog) {
+        if (typeof dialog.Init != "undefined") {
+            Session.Dialogs.push(dialog);
+        } else {
+            console.warn("Dialog doesn't have Init function!");
+        }
+    }
+
     static ShowLoading() {
         $.blockUI({
             message: $('div.block-ui'),
@@ -27,11 +36,16 @@
         $.unblockUI();
     }
 
-    static SwichDialog(id) {
+    static SwichDialog(pageName) {
+
+        if (Session.CurrentPage === pageName) {
+            console.log("Page '" + pageName + "' already opened!");
+            return;
+        }
 
         var activeDialog = $(".dialog:visible").first();
         var width = $(window).width() + 10;
-        var newDialog = $("#" + id);
+        var newDialog = $("#" + pageName);
 
         newDialog.css('left', '-' + width + 'px');
         newDialog.css('position', 'absolute');
@@ -63,5 +77,14 @@
             newDialog.css('left', 'auto');
             newDialog.css('width', "auto");
         });
+
+        Session.CurrentPage = pageName;
+        var dialogs = Session.Dialogs;
+        for (let i; i < dialogs.length; i++) {
+            if (dialogs[i].name == pageName) {
+                dialogs[i].Init();
+                break;
+            }
+        }
     }
 }

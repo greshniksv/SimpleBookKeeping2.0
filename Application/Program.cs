@@ -56,7 +56,9 @@ builder.Services.AddCors(options =>
 	options.AddPolicy(name: MyAllowSpecificOrigins,
 		policy =>
 		{
-			policy.WithOrigins("https://localhost", "https://127.0.0.1", "https://localhost:7061", "https://localhost:5033");
+			policy.WithOrigins("https://localhost:6001", "https://localhost:5033")
+				.AllowAnyHeader()
+				.AllowAnyMethod();
 		});
 });
 
@@ -88,12 +90,11 @@ builder.Services.AddAuthentication(options =>
 			ValidateIssuer = false,
 			ValidateAudience = false,
 			ValidateLifetime = false,
-			ValidateIssuerSigningKey = true
+			ValidateIssuerSigningKey = false
 		};
-		//o.BackchannelHttpHandler = new HttpClientHandler {
-		//	ServerCertificateCustomValidationCallback =
-		//		HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-		//};
+		o.BackchannelHttpHandler = new HttpClientHandler {
+			ServerCertificateCustomValidationCallback = (message, certificate2, arg3, arg4) => true
+		};
 	});
 
 builder.Services.AddAuthorization();

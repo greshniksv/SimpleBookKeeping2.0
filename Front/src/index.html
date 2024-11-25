@@ -100,7 +100,7 @@
                      id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Главная</a>
+                            <a class="nav-link active" aria-current="page" href="#" onclick="Home()">Главная</a>
                         </li>
                         <li class="nav-item dropdown">
 
@@ -120,7 +120,7 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link">Настроки</a>
+                            <a class="nav-link" href="#" onclick="Settings()">Настроки</a>
                         </li>
                     </ul>
                 </div>
@@ -128,9 +128,11 @@
         </nav>
 
         <div class="content">
-            <div class="dialog" style="display:block" id="auth_dialog"></div>
-            <div class="dialog" id="home_dialog"></div>
+            <div class="dialog" id="auth_dialog"></div>
+            <div class="dialog" style="display:block" id="home_dialog"></div>
+            <div class="dialog" id="plan_dialog"></div>
             <div class="dialog" id="cost_dialog"></div>
+            <div class="dialog" id="settings_dialog"></div>
         </div>
     </div>
 
@@ -154,31 +156,30 @@
 
 <script>
 
+ 
+
+
     $(document).ready(function () {
         //var a = new Auth();
         //a.getToken("admin", "admin",);
 
         $("#auth_dialog").load("/main/dialogs/auth.html");
         $("#home_dialog").load("/main/dialogs/home.html");
+        $("#plan_dialog").load("/main/dialogs/plan.html");
+        $("#cost_dialog").load("/main/dialogs/cost.html");
+        $("#settings_dialog").load("/main/dialogs/settings.html");
 
+        window.setTimeout(HomeDialog.Init, 1000);
+       
     });
 
-    function Anim(id) {
-
-
-        var width = $(window).width();
-        $("#" + id).css('left', '-' + width + 'px');
-        $("#" + id).show();
-
-        $(".dialog:visible").first().animate({
-            left: width
-        }, 'slow');
-
-        $("#" + id).animate({
-            left: 0
-        }, 'slow');
-
-
+    function Home() {
+        Tools.SwichDialog("home_dialog");
     }
+
+    function Settings() {
+        Tools.SwichDialog("settings_dialog");
+    }
+
 
 </script>
