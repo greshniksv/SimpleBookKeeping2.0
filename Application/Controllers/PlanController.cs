@@ -131,10 +131,6 @@ namespace Application.Controllers
 			if (model.Start >= model.End)
 			{
 				throw new Exception("Дата начала должна быть меньше даты конца");
-
-				//ModelState
-				//	.AddModelError(nameof(model.Start),
-				//		"Дата начала должна быть меньше даты конца");
 			}
 
 			IList<CostModel> costs = null;
