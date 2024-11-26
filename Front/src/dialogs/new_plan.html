@@ -3,10 +3,12 @@
 
     .select2-selection__choice {
         color: wheat !important;
+        <button type="button" class="btn btn-primary">Добавить</button>
     }
 
     .select2-results__option {
         color: wheat !important;
+        <button type="button" class="btn btn-primary">Добавить</button>
     }
 
     /* Change the appearence of the bakground colour surrounding the search input field */
@@ -39,47 +41,86 @@
         /* Change the color of the default selected item i.e. the first option */
         .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
             color: #ffffff !important;
+            <button type="button" class="btn btn-primary">Добавить</button>
         }
-
 </style>
 
-<div class="form-control">
-    <input type="hidden" name="id" />
 
-    <div class="mb-3">
-        <label for="newplan_name" class="form-label">Название</label>
-        <input type="text" class="form-control" id="newplan_name" aria-describedby="newplan_name_help">
-        <div id="newplan_name_help" class="form-text">We'll never share your email with anyone else.</div>
+
+<div id="accordion">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h5 class="mb-0">
+                <button id="newpaln_accordion" class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Изменить план:
+                </button>
+            </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="card-body">
+
+                <div class="form-control">
+                    <input type="hidden" id="newpaln_id" />
+
+                    <div class="mb-3">
+                        <label for="newplan_name" class="form-label">Название</label>
+                        <input type="text" class="form-control" id="newplan_name" aria-describedby="newplan_name_help">
+                        <div id="newplan_name_help" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="newplan_start" class="form-label">Начало</label>
+                        <input type="text" data-provide="datepicker" data-date-format="yyyy/mm/dd" class="datepicker form-control" id="newplan_start" aria-describedby="newplan_start_help">
+                        <div id="newplan_start_help" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="newplan_end" class="form-label">Завершение</label>
+                        <input type="text" data-provide="datepicker" data-date-format="yyyy/mm/dd" class="datepicker form-control" id="newplan_end" aria-describedby="newplan_end_help">
+                        <div id="newplan_end_help" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="newplan_balance" class="form-label">Сумма</label>
+                        <input type="number" class="form-control" id="newplan_balance" aria-describedby="newplan_balance_help">
+                        <div id="newplan_balance_help" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+
+                    <select class="form-select" id="newplan_users" data-placeholder="Выбрите полльзователя" multiple>
+                    </select>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                    </div>
+
+                    <button type="button" onclick="NewPlanDialog.AddNewPlan()" class="btn btn-success p-2">Добавить</button>
+                    <button type="button" onclick="NewPlanDialog.Cancel()" class="btn btn-secondary p-2">Отмена</button>
+                    <button type="button" onclick="NewPlanDialog.Delete()" class="btn btn-danger p-2">Удалить</button>
+                </div>
+
+            </div>
+
+        </div>
     </div>
+    <div class="card">
+        <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Добавить в план
+                </button>
+            </h5>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+            <div class="card-body">
+                <div class="form-control">
+                    <div class="mb-3 form-check">
+                        <button type="button" onclick="NewPlanDialog.GoToCost()" class="btn btn-success p-2">Добавить расходы</button>
+                    </div>
 
-    <div class="mb-3">
-        <label for="newplan_start" class="form-label">Начало</label>
-        <input type="text" data-provide="datepicker" data-date-format="dd/mm/yyyy" class="datepicker form-control" id="newplan_start" aria-describedby="newplan_start_help">
-        <div id="newplan_start_help" class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label for="newplan_end" class="form-label">Завершение</label>
-        <input type="text" data-provide="datepicker" data-date-format="dd/mm/yyyy" class="datepicker form-control" id="newplan_end" aria-describedby="newplan_end_help">
-        <div id="newplan_end_help" class="form-text">We'll never share your email with anyone else.</div>
-    </div>
-
-    <div class="mb-3">
-        <label for="newplan_balance" class="form-label">Сумма</label>
-        <input type="number" class="form-control" id="newplan_balance" aria-describedby="newplan_balance_help">
-        <div id="newplan_balance_help" class="form-text">We'll never share your email with anyone else.</div>
-    </div>
-
-    <select class="form-select" id="multiple-select-field" data-placeholder="Choose anything" multiple>
-        <option>Christmas Island</option>
-        <option>South Sudan</option>
-        <option>Czech Republic</option>
-        <option>Russia</option>
-    </select>
-
-    <div class="mb-3 form-check">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
 </div>

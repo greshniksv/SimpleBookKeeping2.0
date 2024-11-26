@@ -21,7 +21,7 @@ namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 		public async Task<PlanModel> Handle(GetPlanQuery request, CancellationToken cancellationToken)
 		{
 			List<Plan> plans = await _planRepository
-				.GetAsync(p => p.Id == request.PlanId && p.Deleted == false).ToListAsync(cancellationToken);
+				.GetAsync(p => p.Id == request.PlanId && p.Deleted == false,null, "PlanMembers").ToListAsync(cancellationToken);
 
 			if (!plans.Any())
 			{

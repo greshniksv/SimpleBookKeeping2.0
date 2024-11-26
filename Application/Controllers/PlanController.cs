@@ -100,7 +100,7 @@ namespace Application.Controllers
 		}
 
 		///  <summary>
-		///  Delete Plan
+		///  Create Plan
 		///  </summary>
 		///  <returns><see cref="ICommonReturn{T}"/> of <see cref="PlanModel"/> </returns>
 		///  <remarks>

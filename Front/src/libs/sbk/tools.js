@@ -1,5 +1,9 @@
 ﻿class Tools {
 
+    static GuidEmpty() {
+        return "00000000-0000-0000-0000-000000000000";
+    }
+
     static AddDialog(dialog) {
         if (typeof dialog.Init != "undefined") {
             Session.Dialogs.push(dialog);
@@ -36,7 +40,28 @@
         $.unblockUI();
     }
 
-    static SwichDialog(pageName) {
+    static backData = []
+    static GoBack() {
+        if (Tools.backData.length < 2) {
+            return;
+        }
+
+        var cur = Tools.backData[Tools.backData.length - 2];
+        var items = [];
+
+        for (let i = 0; i <= Tools.backData.length - 2; i++) {
+            items.push(Tools.backData[i]);
+        }
+        Tools.backData = items;
+
+        Tools.SwichDialog(cur.pageName, cur.params, true);
+    }
+
+    static SwichDialog(pageName, params, isBack) {
+
+        if (typeof isBack == "undefined") {
+            Tools.backData.push({ pageName: pageName, params: params });
+        }
 
         if (Session.CurrentPage === pageName) {
             console.log("Page '" + pageName + "' already opened!");
@@ -49,7 +74,7 @@
 
         newDialog.css('left', '-' + width + 'px');
         newDialog.css('position', 'absolute');
-        newDialog.css('width', width+"px");
+        newDialog.css('width', width + "px");
 
         newDialog.show();
 
@@ -80,9 +105,9 @@
 
         Session.CurrentPage = pageName;
         var dialogs = Session.Dialogs;
-        for (let i=0; i < dialogs.length; i++) {
+        for (let i = 0; i < dialogs.length; i++) {
             if (dialogs[i].name == pageName) {
-                dialogs[i].Init();
+                dialogs[i].Init(params);
                 break;
             }
         }

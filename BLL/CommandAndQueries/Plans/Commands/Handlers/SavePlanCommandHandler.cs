@@ -65,7 +65,7 @@ namespace BLL.CommandAndQueries.Plans.Commands.Handlers
 				{
 					// Add plan
 					//session.SaveOrUpdate(plan);
-					if (exist)
+					if (!exist)
 					{
 						await _planRepository.InsertAsync(plan);
 					}

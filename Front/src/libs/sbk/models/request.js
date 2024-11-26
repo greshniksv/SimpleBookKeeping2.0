@@ -15,7 +15,7 @@
         request.method = 'post'
         request.dataType = "json";
         request.contentType = "application/json";
-        request.data = data;
+        request.data = JSON.stringify(data);
         request.onSuccess = onSuccess;
         request.onError = onError;
         return request;
