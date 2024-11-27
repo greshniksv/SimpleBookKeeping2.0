@@ -32,4 +32,16 @@
         request.onError = onError;
         return request;
     }
+
+    static Delete(url, onSuccess, onError) {
+        var request = new AjaxRequest();
+        request.url = url;
+        request.method = 'delete';
+        request.dataType = "none";
+        request.contentType = "application/json";
+        request.data = undefined;
+        request.onSuccess = onSuccess;
+        request.onError = onError;
+        return request;
+    }
 }

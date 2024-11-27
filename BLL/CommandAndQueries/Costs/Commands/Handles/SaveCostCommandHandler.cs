@@ -28,25 +28,19 @@ namespace BLL.CommandAndQueries.Costs.Commands.Handles
 
 		public async Task<bool> Handle(SaveCostCommand request, CancellationToken cancellationToken)
 		{
-			Cost cost;
-			List<CostDetail> costDetails = null;
-
 			Plan plan = await _planRepository.GetAsync(p => p.Id == request.Cost.PlanId).FirstAsync(cancellationToken);
 			if (request.Cost.Id != Guid.Empty)
 			{
-				cost = await _costRepository.GetAsync(x => x.Id == request.Cost.Id).FirstAsync(cancellationToken);
-				if (cost == null)
+				var existCost = await _costRepository.GetAsync(x => x.Id == request.Cost.Id).FirstAsync(cancellationToken);
+				if (existCost == null)
 				{
 					throw new CostNotFoundException(request.Cost.Id.ToString());
 				}
 
-				costDetails = cost.CostDetails.ToList();
-			}
-			else
-			{
-				cost = new Cost { Plan = plan };
+				await _costRepository.DeleteAsync(existCost.Id, true);
 			}
 
+			Cost cost = new() { Plan = plan };
 			_mapper.Map(request.Cost, cost);
 
 			await using IDbContextTransaction transaction = await _mainContext.BeginTransactionAsync(cancellationToken);
@@ -54,19 +48,10 @@ namespace BLL.CommandAndQueries.Costs.Commands.Handles
 			{
 				await _costRepository.InsertAsync(cost);
 
-				// Remove old details
-				if (costDetails != null)
-				{
-					foreach (var costDetail in costDetails)
-					{
-						costDetail.Cost = null;
-						await _costDetailRepository.DeleteAsync(costDetail.Id, true);
-					}
-				}
-
 				// Insert new details
 				foreach (var costDetailModel in request.Cost.CostDetails)
 				{
+					costDetailModel.Id = Guid.Empty;
 					var detail = new CostDetail();
 					_mapper.Map(costDetailModel, detail);
 					detail.Cost = cost;

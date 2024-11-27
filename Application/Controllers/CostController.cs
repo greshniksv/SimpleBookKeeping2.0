@@ -4,6 +4,7 @@ using BLL.CommandAndQueries.Costs.Queries;
 using BLL.DtoModels;
 using BLL.Models;
 using BLL.Models.Interfaces;
+using DAL.DbModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +33,7 @@ namespace Application.Controllers
 		/// 		POST /api/v1/Cost/byPlan/{planId}
 		///  </remarks>
 		///  <response code="500">Internal error</response>
-		[HttpGet("byPlan")]
+		[HttpGet("byPlan/{planId}")]
 		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
 		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(
@@ -56,7 +57,7 @@ namespace Application.Controllers
 		/// 		POST /api/v1/Cost
 		///  </remarks>
 		///  <response code="500">Internal error</response>
-		[HttpGet()]
+		[HttpGet("{costId}")]
 		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
 		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(
@@ -79,7 +80,7 @@ namespace Application.Controllers
 		/// 		DELETE /api/v1/Cost
 		///  </remarks>
 		///  <response code="500">Internal error</response>
-		[HttpDelete()]
+		[HttpDelete("{id}")]
 		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
 		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(
@@ -88,7 +89,8 @@ namespace Application.Controllers
 		public async Task<IActionResult> Remove(Guid id)
 		{
 			await _mediator.Send(new RemoveCostCommand { CostId = id });
-			return StatusCode(StatusCodes.Status200OK);
+			return StatusCode(StatusCodes.Status200OK,
+				new HttpBaseResponse<bool>(true));
 		}
 
 		///  <summary>
@@ -100,7 +102,7 @@ namespace Application.Controllers
 		/// 		GET /api/v1/Cost/generate
 		///  </remarks>
 		///  <response code="500">Internal error</response>
-		[HttpGet("generate")]
+		[HttpGet("generate/{planId}")]
 		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
 		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(
@@ -122,7 +124,7 @@ namespace Application.Controllers
 		/// 		GET /api/v1/Cost/generate
 		///  </remarks>
 		///  <response code="500">Internal error</response>
-		[HttpPost("save")]
+		[HttpPost()]
 		[ProducesResponseType(typeof(ICommonError), StatusCodes.Status500InternalServerError)]
 		[ProducesResponseType(typeof(IValidationError), StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(
@@ -150,7 +152,8 @@ namespace Application.Controllers
 
 			await _mediator.Send(new SaveCostCommand { Cost = model });
 
-			return StatusCode(StatusCodes.Status200OK);
+			return StatusCode(StatusCodes.Status200OK,
+				new HttpBaseResponse<bool>(true));
 		}
 	}
 }

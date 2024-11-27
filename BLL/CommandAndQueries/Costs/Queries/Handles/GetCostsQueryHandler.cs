@@ -29,12 +29,14 @@ namespace BLL.CommandAndQueries.Costs.Queries.Handles
 			if (request.ShowDeleted)
 			{
 				costs = await _costRepository.GetAsync(x =>
-					x.Plan.Id == request.PlanId).ToListAsync(cancellationToken);
+					x.Plan.Id == request.PlanId, null, "CostDetails")
+					.ToListAsync(cancellationToken);
 			}
 			else
 			{
 				costs = await _costRepository.GetAsync(x =>
-					x.Plan.Id == request.PlanId && x.Deleted == false).ToListAsync(cancellationToken);
+					x.Plan.Id == request.PlanId && x.Deleted == false, null, "CostDetails")
+					.ToListAsync(cancellationToken);
 			}
 
 			IList<CostModel> costModels = _mapper.Map<IList<CostModel>>(costs);

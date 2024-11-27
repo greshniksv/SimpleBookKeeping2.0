@@ -5,10 +5,8 @@
     static Init() {
         console.log("Init plan");
 
-        Tools.ShowLoading();
         var req = AjaxRequest.Get("/v1/Plan", function (data) {
             console.log("loading users");
-            Tools.HideLoading();
 
             if (typeof data.result == "undefined") {
                 console.error(data);
@@ -16,7 +14,7 @@
             }
 
             PlanDialog.LoadingPlans(data.result);
-        }, function () { Tools.HideLoading(); });
+        });
 
         AjaxRequestEngine.Execute(req);
     }
@@ -51,7 +49,7 @@
                 <small>`+ diff + ` дней</small>
             </div>
             <p class="mb-1">Начиная с `+ startDate.toLocaleDateString("ru-RU") + ` по ` + endDate.toLocaleDateString("ru-RU") + `</p>
-            <small>Баланс: `+ v.balance + ` руб.</small>
+            <small>Баланс: `+ v.balance + `</small>
         </a>
             `;
 
@@ -63,6 +61,10 @@
             function () { $(this).removeClass('active') }
         );
 
+        //$(".plan-item").on("click", function () {
+        //    $(".plan-item").removeClass('active');
+        //    $(this).addClass('active');
+        //});
     }
 
 }

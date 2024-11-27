@@ -22,9 +22,7 @@
         });
 
 
-        //$("button[data-toggle=collapse]").attr("id")
-
-        $("button[data-toggle=collapse]").on("click", function () {
+        $("#new_plan_accordion").find("button[data-toggle=collapse]").on("click", function () {
             $(".collapse").collapse('hide');
             var id = $(this).attr("data-target");
             $(id).collapse('show');
@@ -32,7 +30,10 @@
 
 
         $('#collapseOne').collapse('hide');
+        $("#collapseTwo").collapse('hide');
 
+
+        Tools.ShowLoading();
         // Loading user list
         var req = AjaxRequest.Get("/v1/User", function (data) {
             console.log("loading users");
@@ -49,26 +50,29 @@
                 NewPlanDialog.planId = planId;
                 var req = AjaxRequest.Get("/v1/Plan/" + planId, function (data) {
 
+                    Tools.HideLoading();
                     if (typeof data.result == "undefined") {
                         console.error(data);
                         return;
                     }
 
                     NewPlanDialog.LoadPlan(data.result);
-                });
+                    $("#collapseTwo").collapse('show');
+                }, function () { Tools.HideLoading(); });
 
                 AjaxRequestEngine.Execute(req);
             } else {
                 $('#collapseOne').collapse('show');
+                Tools.HideLoading();
             }
 
-        });
+        }, function () { Tools.HideLoading(); });
 
         AjaxRequestEngine.Execute(req);
     }
 
     static GoToCost() {
-        Tools.SwichDialog("cost_dialog", { plan: NewPlanDialog.planId, cost: undefined }); 
+        Tools.SwichDialog("cost_dialog", NewPlanDialog.planId ); 
     }
 
     static LoadPlan(plan) {

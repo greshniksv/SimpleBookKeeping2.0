@@ -1,0 +1,51 @@
+﻿
+
+
+<div class="form-control">
+    <input type="hidden" id="cost_costid" />
+    <input type="hidden" id="cost_planid" />
+
+    <div class="mb-3">
+        <div class="col-auto">
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Название</div>
+                </div>
+                <input type="text" class="form-control" id="cost_name" placeholder="">
+            </div>
+        </div>
+    </div>
+
+    <div id="cost_details" class="form-control">
+
+
+    </div>
+
+    <div class="pt-2">
+        <button type="button" onclick="NewCostDialog.Save()" class="btn btn-success p-2">Сохранить</button>
+        <button type="button" onclick="NewCostDialog.Cancel()" class="btn btn-secondary p-2">Отмена</button>
+        <button type="button" onclick="NewCostDialog.Delete()" class="btn btn-danger p-2">Удалить</button>
+    </div>
+    
+    <div class="pt-2">
+        <div class="accordion" id="cost_accordion">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#cost_generator" aria-expanded="true" aria-controls="cost_generator">
+                        Генератор
+                    </button>
+                </h2>
+                <div id="cost_generator" class="accordion-coll coll show" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the coll plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+        
+
+
+    </div>
