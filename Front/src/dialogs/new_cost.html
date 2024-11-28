@@ -1,6 +1,5 @@
 ﻿
 
-
 <div class="form-control">
     <input type="hidden" id="cost_costid" />
     <input type="hidden" id="cost_planid" />
@@ -9,7 +8,7 @@
         <div class="col-auto">
             <div class="input-group mb-2">
                 <div class="input-group-prepend">
-                    <div class="input-group-text">Название</div>
+                    <div class="input-group-text">Название расхода</div>
                 </div>
                 <input type="text" class="form-control" id="cost_name" placeholder="">
             </div>
@@ -18,7 +17,6 @@
 
     <div id="cost_details" class="form-control">
 
-
     </div>
 
     <div class="pt-2">
@@ -26,7 +24,7 @@
         <button type="button" onclick="NewCostDialog.Cancel()" class="btn btn-secondary p-2">Отмена</button>
         <button type="button" onclick="NewCostDialog.Delete()" class="btn btn-danger p-2">Удалить</button>
     </div>
-    
+
     <div class="pt-2">
         <div class="accordion" id="cost_accordion">
             <div class="accordion-item">
@@ -36,8 +34,66 @@
                     </button>
                 </h2>
                 <div id="cost_generator" class="accordion-coll coll show" data-bs-parent="#accordionExample">
-                    <div class="accordion-body">
-                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the coll plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    <div class="accordion-body" id="day_of_week">
+
+                        <div class="form-check px-3">
+                            <input class="form-check-input dow" type="checkbox" data-dow="1" value="" id="newcost_mon">
+                            <label class="form-check-label" for="newcost_mon">
+                                Пн
+                            </label>
+                        </div>
+                        <div class="form-check px-3">
+                            <input class="form-check-input dow" type="checkbox" data-dow="2" value="" id="newcost_tue" checked>
+                            <label class="form-check-label" for="newcost_tue">
+                                Вт
+                            </label>
+                        </div>
+                        <div class="form-check px-3">
+                            <input class="form-check-input dow" type="checkbox" data-dow="3" value="" id="newcost_wen">
+                            <label class="form-check-label" for="newcost_wen">
+                                Ср
+                            </label>
+                        </div>
+                        <div class="form-check px-3">
+                            <input class="form-check-input dow" type="checkbox" data-dow="4" value="" id="newcost_thu" checked>
+                            <label class="form-check-label" for="newcost_thu">
+                                Чт
+                            </label>
+                        </div>
+                        <div class="form-check px-3">
+                            <input class="form-check-input dow" type="checkbox" data-dow="5" value="" id="newcost_fri">
+                            <label class="form-check-label" for="newcost_fri">
+                                Пт
+                            </label>
+                        </div>
+                        <div class="form-check px-3">
+                            <input class="form-check-input dow" type="checkbox" data-dow="6" value="" id="newcost_sut" checked>
+                            <label class="form-check-label" for="newcost_sut">
+                                Сб
+                            </label>
+                        </div>
+                        <div class="form-check px-3">
+                            <input class="form-check-input dow" type="checkbox" data-dow="0" value="0" id="newcost_sun" checked>
+                            <label class="form-check-label" for="newcost_sun">
+                                Вс
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-2 pt-3">
+
+                            <div class="mb-3">
+                                <div class="col-auto">
+                                    <div class="input-group mb-2">
+                                        <div class="input-group-prepend">
+                                            <div class="input-group-text"> Сумма </div>
+                                        </div>
+                                        <input type="text" id="newcost_generator_sum" value="0" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-secondary" onclick="NewCostDialog.Generate()" type="button">Вставить</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -45,7 +101,7 @@
         </div>
     </div>
 
-        
 
 
-    </div>
+
+</div>

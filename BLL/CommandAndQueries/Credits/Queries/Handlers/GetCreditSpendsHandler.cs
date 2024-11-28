@@ -2,7 +2,6 @@
 using BLL.Interfaces;
 using DAL.DbModels;
 using DAL.Interfaces;
-using DAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BLL.CommandAndQueries.Credits.Queries.Handlers
@@ -26,7 +25,7 @@ namespace BLL.CommandAndQueries.Credits.Queries.Handlers
 			List<Spend> items = await (from costDetails in _mainContext.CostDetails
 									   join spend in _mainContext.Spends on costDetails.Id equals spend.CostDetailId
 									   where costDetails.Date > DateTime.Now &&
-									         costDetails.CostId == request.CostId &&
+											 costDetails.CostId == request.CostId &&
 											 costDetails.Deleted == false
 									   select spend).Distinct().ToListAsync(cancellationToken);
 
@@ -45,7 +44,7 @@ namespace BLL.CommandAndQueries.Credits.Queries.Handlers
 				{
 					models.Add(new SpendCreditInfoModel {
 						Comment = spend.Comment,
-						Value = spend.Value,
+						Value = spend.Value ?? 0,
 						DaysToFinish = 1
 					});
 				}
@@ -54,7 +53,6 @@ namespace BLL.CommandAndQueries.Credits.Queries.Handlers
 					creditItem.DaysToFinish++;
 				}
 			}
-
 
 			return models.AsReadOnly();
 		}

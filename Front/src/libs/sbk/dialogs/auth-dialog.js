@@ -2,6 +2,8 @@
 
     static name = "auth_dialog";
 
+    static title = "Авторизация";
+
     static Show() {
         $.blockUI({
             message: $('#login_form'),

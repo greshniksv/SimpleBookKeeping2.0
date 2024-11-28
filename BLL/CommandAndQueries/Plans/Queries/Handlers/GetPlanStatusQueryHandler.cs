@@ -43,8 +43,10 @@ namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 			planStatusModel.Name = plan.Name;
 			planStatusModel.Progress = passedDays * 100 / totalDays;
 
-			CostStatusModel[] list = _mainContext.CostList(plan.Id);
-			int allSpends = _mainContext.SpendsSumByPlan(plan.Id);
+
+
+			IReadOnlyList<CostStatusModel> list = CostList(plan.Id);
+			int allSpends = SpendsSumByPlan(plan.Id);
 
 			//var list = session.CreateSQLQuery($"exec dbo.CostList @Plan='{plan.Id}'")
 			//	.SetResultTransformer(Transformers.AliasToBean<CostStatusModel>()).List<CostStatusModel>();
@@ -59,6 +61,36 @@ namespace BLL.CommandAndQueries.Plans.Queries.Handlers
 
 			planStatusModel.CostStatusModels = costStatusModels;
 			return planStatusModel;
+		}
+
+
+		public IReadOnlyList<CostStatusModel> CostList(Guid planId)
+		{
+			List<CostStatusModel> list = new();
+			foreach (Cost cost in _mainContext.Costs.Where(x => x.PlanId == planId && x.Deleted == false).ToList())
+			{
+				var items = from det in _mainContext.CostDetails
+					where det.CostId == cost.Id && det.Deleted == false && det.Date <= DateTime.Now
+					select new {
+						det,
+						spend = (_mainContext.Spends.Where(x => x.CostDetailId == det.Id).Sum(x => x.Value ?? 0)),
+						balabse = det.Value - (_mainContext.Spends.Where(x => x.CostDetailId == det.Id).Sum(x => x.Value ?? 0))
+					};
+
+				var balance = items.Sum(x => x.balabse);
+				list.Add(new CostStatusModel() { Id = cost.Id, Name = cost.Name, Balance = balance });
+			}
+
+			return list.AsReadOnly();
+		}
+
+		public int SpendsSumByPlan(Guid planId)
+		{
+			return (from cost in _mainContext.Costs
+				join cd in _mainContext.CostDetails on cost.Id equals cd.CostId
+				join spend in _mainContext.Spends on cd.Id equals spend.CostDetailId
+				where cost.PlanId == planId && cost.Deleted == false && cd.Deleted == false
+				select spend.Value ?? 0).Sum();
 		}
 	}
 }

@@ -16,6 +16,8 @@ namespace BLL.DtoModels
 
         public int BalanceToEnd { get; set; }
 
+        public string CurrentDateTime { get; set; }
+
         public IReadOnlyCollection<CostStatusModel> CostStatusModels { get; set; }
     }
 }

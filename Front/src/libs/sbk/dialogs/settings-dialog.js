@@ -1,6 +1,7 @@
 ﻿class SettingsDialog extends DialogBase {
 
     static name = "settings_dialog";
+    static title = "Настройки";
 
     static Init() {
         console.log("Init plan");

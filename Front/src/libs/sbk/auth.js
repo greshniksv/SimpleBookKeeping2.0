@@ -3,7 +3,7 @@
     static getToken(userName, password, onSuccess, onError) {
 
         $.ajax({
-            url: BASE_HOST + '/connect/token',
+            url: AUTH_BASE_HOST + '/connect/token',
             method: 'post',
             dataType: 'json',
             contentType: "application/x-www-form-urlencoded; charset=utf-8",
@@ -44,7 +44,7 @@
         }
 
         $.ajax({
-            url: BASE_HOST + '/connect/token',
+            url: AUTH_BASE_HOST + '/connect/token',
             method: 'post',
             dataType: 'json',
             contentType: "application/x-www-form-urlencoded; charset=utf-8",

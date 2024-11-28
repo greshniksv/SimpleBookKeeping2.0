@@ -92,13 +92,72 @@
                 transform: rotate(360deg);
             }
         }
+
+        .weekend {
+            background-color: #30363c
+        }
+
+
+
+
+        /*------------------------------------------*/
+
+
+
+        .select2-selection__choice {
+            color: wheat !important;
+        }
+
+        .select2-results__option {
+            color: wheat !important;
+        }
+
+        /* Change the appearence of the bakground colour surrounding the search input field */
+        .select2-search {
+            background-color: #343A40 !important;
+        }
+            /* Change the appearence of the search input field */
+            .select2-search input {
+                color: #ffffff !important;
+                background-color: #343A40 !important;
+            }
+
+        /* Change the appearence of the search results container */
+        .select2-results {
+            background-color: #343A40 !important;
+        }
+
+        /* Change the appearence of the dropdown select container */
+        .select2-container--bootstrap-5 .select2-selection {
+            border-color: #6c757d !important;
+            color: #ffffff !important;
+            background-color: #343A40 !important;
+        }
+
+        /* Change the caret down arrow symbol to white */
+        .select2-container--bootstrap-5 .select2-selection--single {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") !important;
+        }
+
+            /* Change the color of the default selected item i.e. the first option */
+            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+                color: #ffffff !important;
+                <button type="button" class="btn btn-primary">Добавить</button>
+            }
+
+
+        /* ------------------------------------------------ */
+
+        div#day_of_week > div {
+            display: inline-block;
+        }
     </style>
 
     <div data-role="page">
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Название страницы</a>
+                <a class="navbar-brand" id="main_title" href="#">Название страницы</a>
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
@@ -119,7 +178,7 @@
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Расходы
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <ul id="main_costs" class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li>
                                     <a class="dropdown-item" href="#">Расход 1</a>
                                 </li>
@@ -168,12 +227,23 @@
     <h3>Loading...</h3>
 </div>
 
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    Holy guacamole! You should check in on some of those fields below.
+    <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<div class="alert alert-info alert-dismissible fade show" role="alert">
+    <h5 class="alert-heading">More</h5>
+    This is an info alert — check it out!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
 <script>
 
     $(document).ready(function () {
         //var a = new Auth();
         //a.getToken("admin", "admin",);
 
+        $.ajaxSetup({ cache: false });
         $("#auth_dialog").load("/main/dialogs/auth.html");
         $("#home_dialog").load("/main/dialogs/home.html");
         $("#plan_dialog").load("/main/dialogs/plan.html");
@@ -183,7 +253,7 @@
         $("#new_plan_dialog").load("/main/dialogs/new_plan.html");
 
         window.setTimeout(HomeDialog.Init, 1000);
-       
+
     });
 
     function Home() {

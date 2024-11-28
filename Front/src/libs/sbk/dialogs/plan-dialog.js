@@ -1,6 +1,7 @@
 ﻿class PlanDialog extends DialogBase {
 
     static name = "plan_dialog";
+    static title = "Планы";
 
     static Init() {
         console.log("Init plan");

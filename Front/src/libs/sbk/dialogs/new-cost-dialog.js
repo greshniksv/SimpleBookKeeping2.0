@@ -1,6 +1,7 @@
 ﻿class NewCostDialog extends DialogBase {
 
     static name = "new_cost_dialog";
+    static title = "Новай расход";
     static planId = undefined;
     static costId = undefined;
 
@@ -96,15 +97,17 @@
         $.each(costs.costDetails, function (i, v) {
 
             var date = new Date(v.date);
+            var dayOfWeek = date.getDay();
+            var className = (dayOfWeek == 6 || dayOfWeek == 0 ? "weekend" : "");
 
             var item = `
-                <div class="mb-3 cost-details-item">
+                <div class="mb-3 cost-details-item" data-day='`+ dayOfWeek +`' >
                     <div class="col-auto">
                         <div class="input-group mb-2">
                             <div class="input-group-prepend">
                                 <div class="input-group-text"> `+ date.toLocaleDateString("ru-RU") + ` </div>
                             </div>
-                            <input type="text" code='` + v.id + `' date='` + v.date + `' value='` + v.value + `' class="cost-detail form-control" placeholder="">
+                            <input type="text" code='` + v.id + `' date='` + v.date + `' value='` + v.value + `' class="cost-detail form-control ` + className +`">
                         </div>
                     </div>
                 </div>
@@ -122,6 +125,17 @@
         AjaxRequestEngine.Execute(req);
     }
 
+    static Generate() {
+
+        var value = $("#newcost_generator_sum").val();
+        $("input.dow:checked").each(function (i, v) {
+            var dow = $(this).attr("data-dow");
+
+            $("div[data-day=" + dow + "]").find("input").val(value);
+        });
+
+        $('#cost_generator').collapse('hide');
+    }
 
     static Save() {
 

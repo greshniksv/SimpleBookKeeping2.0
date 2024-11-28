@@ -43,12 +43,13 @@ namespace Application.Controllers
 		public async Task<IActionResult> Get()
 		{
 			Guid userId = _httpContextService.GetCurrentUserId();
-			List<PlanStatusModel> planStatusModels = new List<PlanStatusModel>();
+			List<PlanStatusModel> planStatusModels = new ();
 			var activePlans = await _mediator.Send(new GetPlansQuery { IsActive = true, UserId = userId });
 			foreach (var activePlan in activePlans)
 			{
-				var palnStatus = await _mediator.Send(new GetPlanStatusQuery { PlanId = activePlan.Id });
-				planStatusModels.Add(palnStatus);
+				var planStatus = await _mediator.Send(new GetPlanStatusQuery { PlanId = activePlan.Id });
+				planStatus.CurrentDateTime = DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
+				planStatusModels.Add(planStatus);
 			}
 
 			return StatusCode(StatusCodes.Status200OK,

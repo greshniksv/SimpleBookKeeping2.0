@@ -1,6 +1,7 @@
 ﻿class NewPlanDialog extends DialogBase {
 
     static name = "new_plan_dialog";
+    static title = "Новый план";
     static planId = undefined;
 
     static Init(planId) {
@@ -11,14 +12,15 @@
         $("#newplan_end").val("");
         $("#newplan_name").val("");
         $("#newplan_balance").val("");
-        $('#newplan_users').val([]);
-        $('#newplan_users').trigger('change');
+        $('#newplan_users').val(null).trigger('change');
+
 
         $('#newplan_users').select2({
             theme: "bootstrap-5",
             width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
             placeholder: $(this).data('placeholder'),
             closeOnSelect: false,
+            allowClear: true
         });
 
 
@@ -29,6 +31,7 @@
         });
 
 
+        
         $('#collapseOne').collapse('hide');
         $("#collapseTwo").collapse('hide');
 
@@ -102,8 +105,10 @@
                 text: v.name
             };
 
-            var newOption = new Option(data.text, data.id, false, false);
-            $('#newplan_users').append(newOption).trigger('change');
+            if ($('#newplan_users').find("option[value='" + data.id + "']").length == 0) {
+                var newOption = new Option(data.text, data.id, false, false);
+                $('#newplan_users').append(newOption).trigger('change');
+            } 
         });
     }
 

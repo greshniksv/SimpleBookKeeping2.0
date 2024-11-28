@@ -12,9 +12,9 @@ namespace DAL.Interfaces
 	{
 		DbContext GetDbContext();
 
-		CostStatusModel[] CostList(Guid planId);
+		//IReadOnlyList<CostStatusModel> CostList(Guid planId);
 
-		int SpendsSumByPlan(Guid planId);
+		//int SpendsSumByPlan(Guid planId);
 
 		DbSet<Spend> Spends { get; set; }
 		DbSet<PlanMember> PlanMembers { get; set; }

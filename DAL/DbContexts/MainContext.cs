@@ -21,16 +21,6 @@ namespace DAL.DbContexts
 			return this;
 		}
 
-		public CostStatusModel[] CostList(Guid planId)
-		{
-			throw new NotSupportedException();
-		}
-
-		public int SpendsSumByPlan(Guid planId)
-		{
-			throw new NotSupportedException();
-		}
-
 		public DbSet<Spend> Spends { get; set; }
 		public DbSet<PlanMember> PlanMembers { get; set; }
 		public DbSet<Plan> Plans { get; set; }
@@ -57,9 +47,9 @@ namespace DAL.DbContexts
 		{
 			base.OnModelCreating(modelBuilder);
 			modelBuilder.HasPostgresExtension("uuid-ossp");
-			var mm = typeof(MainContext).GetMethod(nameof(CostList));
+			//var mm = typeof(MainContext).GetMethod(nameof(CostList));
 			//modelBuilder.HasDbFunction(mm).HasName("CostList");
-			modelBuilder.HasDbFunction(typeof(MainContext).GetMethod(nameof(SpendsSumByPlan))).HasName("SpendsSumByPlan");
+			//modelBuilder.HasDbFunction(typeof(MainContext).GetMethod(nameof(SpendsSumByPlan))).HasName("SpendsSumByPlan");
 		}
 	}
 }

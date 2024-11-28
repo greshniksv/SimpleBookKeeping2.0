@@ -37,7 +37,9 @@
     }
 
     static HideLoading() {
-        $.unblockUI();
+        window.setTimeout($.unblockUI, 500);
+
+        //$.unblockUI();
     }
 
     static backData = []
@@ -107,6 +109,7 @@
         var dialogs = Session.Dialogs;
         for (let i = 0; i < dialogs.length; i++) {
             if (dialogs[i].name == pageName) {
+                $("#main_title").html(dialogs[i].title);
                 dialogs[i].Init(params);
                 break;
             }

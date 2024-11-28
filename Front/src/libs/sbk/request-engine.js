@@ -6,7 +6,13 @@
             return;
         }
 
-        var token = JSON.parse(localStorage.getItem('auth')).access_token;
+        if (typeof localStorage.getItem('auth') != "undefined" && localStorage.getItem('auth') != null) {
+            var token = JSON.parse(localStorage.getItem('auth')).access_token;
+        } else {
+            Tools.SwichDialog("auth_dialog");
+            return;
+        }
+        
         if (typeof token == "undefined" || token == null) {
             Tools.SwichDialog("auth_dialog");
             return;

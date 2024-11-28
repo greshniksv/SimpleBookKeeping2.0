@@ -1,6 +1,7 @@
 ﻿class CostDialog extends DialogBase {
 
     static name = "cost_dialog";
+    static title = "Расходы";
     static planId = undefined;
 
     static Init(planId) {
