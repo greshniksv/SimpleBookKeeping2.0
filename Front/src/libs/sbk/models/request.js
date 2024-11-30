@@ -49,7 +49,7 @@
         var request = new AjaxRequest();
         request.url = url;
         request.method = 'delete';
-        request.dataType = "none";
+        request.dataType = "text";
         request.contentType = "application/json";
         request.data = undefined;
         request.onSuccess = onSuccess;

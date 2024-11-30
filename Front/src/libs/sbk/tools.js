@@ -1,5 +1,7 @@
 ﻿class Tools {
 
+    static BackFunction = null;
+
     static GuidEmpty() {
         return "00000000-0000-0000-0000-000000000000";
     }
@@ -53,8 +55,8 @@
     static ShowLoading() {
         $.blockUI({
             message: $('div.block-ui'),
-            fadeIn: 700,
-            fadeOut: 700,
+            fadeIn: 100,
+            //fadeOut: 200,
             //timeout: 2000,
             showOverlay: true,
             centerY: true,
@@ -78,21 +80,10 @@
         window.setTimeout($.unblockUI, 500);
     }
 
-    static backData = []
     static GoBack() {
-        if (Tools.backData.length < 2) {
-            return;
+        if (Tools.BackFunction.constructor.name == "Back") {
+            Tools.BackFunction.Invoke();
         }
-
-        var cur = Tools.backData[Tools.backData.length - 2];
-        var items = [];
-
-        for (let i = 0; i <= Tools.backData.length - 2; i++) {
-            items.push(Tools.backData[i]);
-        }
-        Tools.backData = items;
-
-        Tools.SwichDialog(cur.pageName, cur.params, true);
     }
 
     static SwichDialog(pageName, params, isBack) {
@@ -146,6 +137,7 @@
         for (let i = 0; i < dialogs.length; i++) {
             if (dialogs[i].name == pageName) {
                 $("#main_title").html(dialogs[i].title);
+                Tools.BackFunction = dialogs[i].GetBack();
                 dialogs[i].Init(params);
                 break;
             }

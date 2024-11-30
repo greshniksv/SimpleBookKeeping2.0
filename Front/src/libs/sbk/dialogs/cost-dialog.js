@@ -30,6 +30,10 @@
         AjaxRequestEngine.Execute(req);
     }
 
+    static GetBack() {
+        return new Back("new_plan_dialog", CostDialog.planId)
+    }
+
     static GoToNewCosts() {
         Tools.SwichDialog("new_cost_dialog", { "plan": CostDialog.planId, "cost": undefined });
     }

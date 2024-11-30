@@ -101,7 +101,7 @@ namespace Application.Controllers
 		public async Task<IActionResult> Update([FromBody] AddSpendModel addSpendModels)
 		{
 			Guid userId = _httpContextService.GetCurrentUserId();
-			await _mediator.Send(new InsertSpendCommand {
+			await _mediator.Send(new UpdateSpendCommand {
 				SpendModel = addSpendModels, 
 				UserId = userId
 			});

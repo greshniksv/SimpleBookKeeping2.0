@@ -11,6 +11,9 @@
         });
     }
 
+    static GetBack() {
+    }
+
     static Login() {
 
         var username = $("#auth_username").val();

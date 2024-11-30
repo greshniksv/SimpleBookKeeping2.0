@@ -7,14 +7,7 @@
         console.log("Init home");
 
         Tools.ShowLoading();
-        $('.navbar-nav>li>a:not([data-bs-toggle^="dropdown"])').on('click', function (i, v) {
-            $('.navbar-collapse').collapse('hide');
-        });
-
-        $('.dropdown-menu>li>a:not([data-bs-toggle^="dropdown"])').on('click', function (i, v) {
-            $('.navbar-collapse').collapse('hide');
-        });
-
+        
         var req = AjaxRequest.Get("/v1/PlanStatus", function (data) {
             console.log("loading plan");
 
@@ -169,6 +162,13 @@
             $("#navbarPlanCosts").append(model);
         });
 
+        $('.navbar-nav>li>a:not([data-bs-toggle^="dropdown"])').on('click', function (i, v) {
+            $('.navbar-collapse').collapse('hide');
+        });
+
+        $('.dropdown-menu>li>a:not([data-bs-toggle^="dropdown"])').on('click', function (i, v) {
+            $('.navbar-collapse').collapse('hide');
+        });
     }
 
     static GoToSpend(id) {

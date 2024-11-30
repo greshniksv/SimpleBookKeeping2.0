@@ -18,34 +18,25 @@
                     <div class="mb-3">
                         <label for="newplan_name" class="form-label">Название</label>
                         <input type="text" class="form-control" id="newplan_name" aria-describedby="newplan_name_help">
-                        <div id="newplan_name_help" class="form-text">We'll never share your email with anyone else.</div>
                     </div>
 
                     <div class="mb-3">
                         <label for="newplan_start" class="form-label">Начало</label>
                         <input type="text" data-provide="datepicker" data-date-format="yyyy/mm/dd" class="datepicker form-control" id="newplan_start" aria-describedby="newplan_start_help">
-                        <div id="newplan_start_help" class="form-text">We'll never share your email with anyone else.</div>
                     </div>
 
                     <div class="mb-3">
                         <label for="newplan_end" class="form-label">Завершение</label>
                         <input type="text" data-provide="datepicker" data-date-format="yyyy/mm/dd" class="datepicker form-control" id="newplan_end" aria-describedby="newplan_end_help">
-                        <div id="newplan_end_help" class="form-text">We'll never share your email with anyone else.</div>
                     </div>
 
                     <div class="mb-3">
                         <label for="newplan_balance" class="form-label">Сумма</label>
                         <input type="number" class="form-control" id="newplan_balance" aria-describedby="newplan_balance_help">
-                        <div id="newplan_balance_help" class="form-text">We'll never share your email with anyone else.</div>
                     </div>
 
                     <select class="form-select" id="newplan_users" data-placeholder="Выбрите полльзователя" multiple>
                     </select>
-
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-                    </div>
 
                     <button type="button" onclick="NewPlanDialog.AddNewPlan()" class="btn btn-success p-2">Добавить</button>
                     <button type="button" onclick="NewPlanDialog.Cancel()" class="btn btn-secondary p-2">Отмена</button>

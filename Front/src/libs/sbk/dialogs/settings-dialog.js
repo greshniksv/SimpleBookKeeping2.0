@@ -9,9 +9,11 @@
 
     static GoToPlan() {
         Tools.SwichDialog("plan_dialog");
-
     }
-  
+
+    static GetBack() {
+        return new Back("home_dialog");
+    }
 }
 
 Tools.AddDialog(SettingsDialog);

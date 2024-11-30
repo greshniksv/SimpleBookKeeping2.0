@@ -23,14 +23,11 @@
             allowClear: true
         });
 
-
         $("#new_plan_accordion").find("button[data-toggle=collapse]").on("click", function () {
             $(".collapse").collapse('hide');
             var id = $(this).attr("data-target");
             $(id).collapse('show');
         });
-
-
         
         $('#collapseOne').collapse('hide');
         $("#collapseTwo").collapse('hide');
@@ -72,6 +69,10 @@
         }, function () { Tools.HideLoading(); });
 
         AjaxRequestEngine.Execute(req);
+    }
+
+    static GetBack() {
+        return new Back("plan_dialog");
     }
 
     static GoToCost() {

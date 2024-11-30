@@ -64,10 +64,10 @@
 
             AjaxRequestEngine.Execute(req);
         }
+    }
 
-
-       
-
+    static GetBack() {
+        return new Back("cost_dialog", NewCostDialog.planId);
     }
 
     static LoadingCosts(costs) {

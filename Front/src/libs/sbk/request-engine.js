@@ -24,6 +24,7 @@
             dataType: request.dataType,
             contentType: request.contentType,
             data: request.data,
+            cache: false,
             headers: { "Authorization": "Bearer " + token },
             success: function (data) {
 

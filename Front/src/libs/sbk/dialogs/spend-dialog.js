@@ -29,6 +29,10 @@
         AjaxRequestEngine.Execute(req);
     }
 
+    static GetBack() {
+        return new Back("home_dialog");
+    }
+
 
     /**
      {
@@ -70,22 +74,19 @@
             $.each(v.spends, function (item, value) {
 
                 var comment = $.base64.encode(value.comment);
-
                 spendItem += `
                     <div class="mb-3">
                         <div class="col-auto">
                             <div class="input-group mb-2" data-costId='`+ v.costId + `' data-detailId='` + v.detailId + `' 
                                         data-spendid='` + value.id + `' data-value='` + value.value + `' data-comment='` + comment + `' >
 
-                                <textarea class="input-group-text me-1 w-75 text-wrap" autocomplete='off' > ` + value.comment + ` </textarea>
+                                <textarea class="input-group-text me-1 w-75 text-wrap text-start" autocomplete='off' > ` + value.comment + ` </textarea>
                                 <input type="text" class="form-control ms-1" autocomplete='off' value="` + value.value + `" placeholder="">
                             </div>
                         </div>
                     </div>
                 `;
-
             });
-
 
             var model = `
                 <div class="accordion-item">
@@ -103,20 +104,11 @@
                                     <div class="col-auto">
                                         <div class="input-group mb-2" data-costId='`+ v.costId + `' data-detailId='` + v.detailId + `' 
                                                 data-spendid='` + Tools.GuidEmpty() + `' data-value='' data-comment='' >
-                                            <textarea class="input-group-text me-1 w-75 text-wrap" autocomplete='off'> </textarea>
+                                            <textarea class="input-group-text me-1 w-75 text-wrap text-start" autocomplete='off'> </textarea>
                                             <input type="text" class="form-control ms-1" autocomplete='off' value="" placeholder="Сумма">
                                         </div>
                                     </div>
                                 </div>
-
-                                <!--<div class="mb-3 cost-details-item" data-day="3">
-                                    <div class="col-auto">
-                                        <div class="input-group mb-2">
-                                            <textarea class="input-group-text me-1 w-75 text-wrap" readonly="readonly" autocomplete='off'> Покупка супермаркет jbdsnvbhf sdhfbduisbf uysdfgydsgf sfyudfvb ysdfyudfdsf </textarea>
-                                            <input type="text" readonly="readonly" value="2000" class="cost-detail form-control ms-1">
-                                        </div>
-                                    </div>
-                                </div>-->
 
                                 <div class="d-grid gap-2 pt-1">
                                     <button type="button" onclick="SpendDialog.Save('`+ v.detailId + `')" class="btn btn-success p-2">Сохранить</button>
@@ -129,11 +121,13 @@
 
             $("#spend_list").append(model);
         });
+
+
+        $('#flush-collapse10').collapse('show');
     }
 
     static Save(detailId) {
 
-        debugger;
         const regexp = new RegExp("^[0-9]*$");
         var models = [];
 
@@ -174,36 +168,36 @@
             }
         });
 
-        $.each(models, function (i, v) {
+        $.each(models, function (i, model) {
 
-            if (v.spendId == Tools.GuidEmpty()) {
+            if (model.id == Tools.GuidEmpty()) {
                 // Create
 
                 var req = AjaxRequest.Post("/v1/Spend", model, function (data) {
                     SpendDialog.Init(SpendDialog.spendId);
                 });
 
-                //AjaxRequestEngine.Execute(req);
+                AjaxRequestEngine.Execute(req);
 
             } else {
 
-                if (v.comment == "" && v.value == "") {
+                if (model.comment == "" && model.value == "") {
 
                     // Delete
-                    var req = AjaxRequest.Delete("/v1/Spend/" + vid., function (data) {
+                    var req = AjaxRequest.Delete("/v1/Spend/" + model.id, function (data) {
                         SpendDialog.Init(SpendDialog.spendId);
                     });
 
-                    //AjaxRequestEngine.Execute(req);
+                    AjaxRequestEngine.Execute(req);
 
                 } else {
-                    // Update
 
+                    // Update
                     var req = AjaxRequest.Put("/v1/Spend", model, function (data) {
                         SpendDialog.Init(SpendDialog.spendId);
                     });
 
-                    //AjaxRequestEngine.Execute(req);
+                    AjaxRequestEngine.Execute(req);
                 }
             }
         });

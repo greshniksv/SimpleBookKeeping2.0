@@ -22,6 +22,10 @@
         AjaxRequestEngine.Execute(req);
     }
 
+    static GetBack() {
+        return new Back("settings_dialog");
+    }
+
     static GoToNewPlan() {
         Tools.SwichDialog("new_plan_dialog");
     }
