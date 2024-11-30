@@ -8,7 +8,6 @@ using BLL.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using BLL.CommandAndQueries.Spends.Commands;
 using BLL.CommandAndQueries.Credits.Commands;
 
 namespace Application.Controllers
@@ -78,6 +77,5 @@ namespace Application.Controllers
 
 			return StatusCode(StatusCodes.Status200OK);
 		}
-
 	}
 }

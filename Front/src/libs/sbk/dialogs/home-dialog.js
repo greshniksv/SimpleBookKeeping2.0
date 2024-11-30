@@ -24,8 +24,8 @@
                 return;
             }
 
-            HomeDialog.LoadingForm(data.result[0]);
-            HomeDialog.LoadingMenu(data.result[0]);
+            HomeDialog.LoadingForm(data.result);
+            HomeDialog.LoadingMenu(data.result);
 
         }, function () { Tools.HideLoading(); });
 
@@ -34,66 +34,145 @@
 
     /**
      {
-        "result": [
+      "result": [
+        {
+          "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "name": "string",
+          "balance": 0,
+          "rest": 0,
+          "progress": 0,
+          "balanceToEnd": 0,
+          "currentDateTime": "string",
+          "costStatusModels": [
             {
-                "id": "f44ffd79-4b8f-4854-9eff-67eda6bb2c1e",
-                "name": "sdfdsf",
-                "balance": 18000,
-                "rest": 2343,
-                "progress": 53,
-                "balanceToEnd": 0,
-                "costStatusModels": [
-                    {
-                        "id": "256a392e-c39c-43a6-b527-bf04e6134226",
-                        "name": "Еда",
-                        "balance": 18000
-                    }
-                ]
+              "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+              "name": "string",
+              "balance": 0
             }
-        ]
+          ]
+        }
+      ]
     }
      */
 
     static LoadingForm(data) {
-        $("#home_name").html("<h3>" + data.name + "</h3>");
-        $("#home_balance").html("Баланс:" + data.balance);
-        $("#home_progress").css("width", data.progress + "%");
-        $("#home_datetime").html();
+
         $("#home_list a").remove();
 
-        $.each(data.costStatusModels, function (i, v) {
-            var item = `
-             <a href="#" class="list-group-item list-group-item-action" aria-current="true">
-                <div class="d-flex w-100 justify-content-between">
-                    <h7 class="mb-1">`+ v.name + `</h7>
-                    <small>`+ v.balance + ` руб</small>
+
+        $.each(data, function (num, obj) {
+
+            $(".main-plan-item").remove();
+
+            var model = `
+
+             <div class="main-plan-item form-control">
+
+                <div class="row mb-1 pt-4">
+                    <div class="col">
+                        <div data-mdb-input-init class="form-outline">
+                            <label class="form-label"> <h1> `+ obj.name +`</h1> </label>
+                        </div>
+                    </div>
                 </div>
-            </a>
+
+
+                <div class="row mb-4">
+                    <div class="col">
+                        <div data-mdb-input-init class="form-outline">
+                            <label class="form-label"> В кошельке: `+ obj.balance +` </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col">
+                        <div data-mdb-input-init class="form-outline">
+                            <label class="form-label"> Текущее время: `+ obj.currentDateTime +` </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress">
+                    <div style=" width: `+ obj.progress+`% " class="progress-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <div id="home_list" class="list-group pt-4">
+
             `;
 
-            $("#home_list").append(item);
+            $.each(obj.costStatusModels, function (i, v) {
+                model += `
+                 <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h7 class="mb-1">`+ v.name + `</h7>
+                        <small>`+ v.balance + ` руб</small>
+                    </div>
+                </a>
+                `;
+            });
+
+            model += `
+                            </div>
+
+            </div>
+            `;
+
+            $("#home_base").html(model);
         });
 
     }
 
     static LoadingMenu(data) {
 
-        $("#main_costs a").remove();
+        //navbarPlanCosts
 
-        $.each(data.costStatusModels, function (i, v) {
-            var item = `
-            <li>
-                <a class="dropdown-item" onclick="HomeDialog.GoToSpend('`+ v.id + `')" href="#">` + v.name + `</a>
-            </li>
+        $(".main-plan-index").remove();
+
+        $.each(data, function (num, obj) {
+
+            var title = `
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    `+ obj.name + `
+                </a>
             `;
 
-            $("#main_costs").append(item);
+            var items = "";
+
+            $.each(obj.costStatusModels, function (i, v) {
+
+                items += `
+                <li>
+                    <a class="dropdown-item" onclick="HomeDialog.GoToSpend('`+ v.id + `')" href="#">` + v.name + `</a>
+                </li>
+                `;
+            });
+
+            var model = `
+
+                <ul class="main-plan-index navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#" onclick="Home()">Главная</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                      `+ title + `
+                        <ul id="main_costs" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                           `+ items + `
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="Settings()">Настроки</a>
+                    </li>
+                </ul>
+            `;
+
+            $("#navbarPlanCosts").append(model);
         });
 
     }
 
     static GoToSpend(id) {
-
+        Tools.SwichDialog("spend_dialog", id);
     }
 
 }

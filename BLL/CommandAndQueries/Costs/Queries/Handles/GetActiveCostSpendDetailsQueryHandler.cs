@@ -2,6 +2,7 @@
 using BLL.CommandAndQueries.Plans.Queries;
 using BLL.DtoModels;
 using BLL.Interfaces;
+using DAL.DbModels;
 using DAL.Models;
 using DAL.Repositories.Interfaces;
 using MediatR;
@@ -102,7 +103,7 @@ namespace BLL.CommandAndQueries.Costs.Queries.Handles
 			foreach (var activePlan in activePlans)
 			{
 				var costs = await _costRepository.GetAsync(x =>
-					x.Plan.Id == activePlan.Id && x.Deleted == false).ToListAsync(cancellationToken);
+					x.Plan.Id == activePlan.Id && x.Deleted == false, includeProperties: nameof(Cost.CostDetails)+ ",CostDetails.Spends").ToListAsync(cancellationToken);
 
 				if (request.CostId != Guid.Empty)
 				{

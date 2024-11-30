@@ -3,9 +3,9 @@ using BLL.Interfaces;
 
 namespace BLL.CommandAndQueries.Spends.Commands
 {
-	public class SaveSpendCommand : ICommand<bool>
+	public class UpdateSpendCommand : ICommand<bool>
 	{
-		public IReadOnlyCollection<AddSpendModel> SpendModels { get; set; }
+		public AddSpendModel SpendModel { get; set; }
 
 		public Guid UserId { get; set; }
 	}

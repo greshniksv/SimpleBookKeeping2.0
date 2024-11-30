@@ -12,6 +12,44 @@
         }
     }
 
+    static PushNotification(type, text) {
+
+        var top = $(window).height() - 150;
+        var width = $(window).width();
+
+        if (type === "success") {
+            $("#notify_success").css("left", "-" + width + "px");
+            $("#notify_success").css("top", top + "px");
+            $("#notify_success_text").html(text);
+            $("#notify_success").css("visibility", "visible");
+            $("#notify_success").css("opacity", "1");
+
+            $("#notify_success").animate({
+                left: 0
+            }, 'slow', function () {
+                window.setTimeout(function () {
+                    $("#notify_success").animate({ opacity: 0 }, 1000);
+                }, 1500);
+            });
+        }
+
+        if (type === "fail") {
+            $("#notify_fail").css("left", "-" + width + "px");
+            $("#notify_fail").css("top", top + "px");
+            $("#notify_fail_text").html(text);
+            $("#notify_fail").css("visibility", "visible");
+            $("#notify_fail").css("opacity", "1");
+
+            $("#notify_fail").animate({
+                left: 0
+            }, 'slow', function () {
+                window.setTimeout(function () {
+                    $("#notify_fail").animate({ opacity: 0 }, 1000);
+                }, 3500);
+            });
+        }
+    }
+
     static ShowLoading() {
         $.blockUI({
             message: $('div.block-ui'),
@@ -38,8 +76,6 @@
 
     static HideLoading() {
         window.setTimeout($.unblockUI, 500);
-
-        //$.unblockUI();
     }
 
     static backData = []

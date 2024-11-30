@@ -11,6 +11,7 @@
 
     <script src="./libs/bootstrap-5.3.3-dist/js/bootstrap.bundle.min.js"></script>
     <script src="./libs/jquery/jquery-3.7.1.min.js"></script>
+    <script src="./libs/jquery/jquery.base64.js"></script>
     <script src="./libs/jquery/jquery.blockUI.js"></script>
 
     <script src="./libs/bootstrap-datepicker-1.10.0/dist/js/bootstrap-datepicker.js"></script>
@@ -161,39 +162,14 @@
                 <button class="navbar-toggler"
                         type="button"
                         data-bs-toggle="collapse"
-                        data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent"
+                        data-bs-target="#navbarPlanCosts"
+                        aria-controls="navbarPlanCosts"
                         aria-expanded="false"
                         aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse"
-                     id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#" onclick="Home()">Главная</a>
-                        </li>
-                        <li class="nav-item dropdown">
+                <div class="collapse navbar-collapse" id="navbarPlanCosts">
 
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Расходы
-                            </a>
-                            <ul id="main_costs" class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="#">Расход 1</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Расход 2</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">Расход 3</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="Settings()">Настроки</a>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </nav>
@@ -206,6 +182,7 @@
             <div class="dialog" id="new_cost_dialog"></div>
             <div class="dialog" id="settings_dialog"></div>
             <div class="dialog" id="new_plan_dialog"></div>
+            <div class="dialog" id="spend_dialog"></div>
         </div>
     </div>
 
@@ -227,14 +204,45 @@
     <h3>Loading...</h3>
 </div>
 
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    Holy guacamole! You should check in on some of those fields below.
+<!--<div id="notify_success" class="alert alert-success alert-dismissible"
+     style="position: fixed; width: 96%; margin-left: 2%; display: inline-flex; visibility: hidden; " data-bs-theme="dark" role="alert">-->
+    <!--<i class="bi bi-check2 m-2"></i>-->
+    
+    <!--<i class="bi bi-check-circle-fill m-2"></i>-->
+    <!--<i class="bi bi-check2-circle"></i>-->
+    <!--<p id="notify_success_text" class="pt-2"></p>
     <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-<div class="alert alert-info alert-dismissible fade show" role="alert">
-    <h5 class="alert-heading">More</h5>
-    This is an info alert — check it out!
+</div>-->
+<!--<div id="notify_fail" class="alert alert-danger alert-dismissible"
+     style="position: fixed; width: 96%; margin-left: 2%; display: inline-flex; visibility: hidden; " data-bs-theme="dark" role="alert">
+    <i class="bi bi-exclamation-triangle m-2"></i>
+    <p id="notify_fail_text" class="pt-2"></p>
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>-->
+
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+    </symbol>
+    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+    </symbol>
+    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+    </symbol>
+</svg>
+<div id="notify_success" class="alert alert-success d-flex align-items-center" style="position: fixed; width: 96%; margin-left: 2%; display: inline-flex; visibility: hidden; " role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill" /></svg>
+    <div id="notify_success_text">
+        An example success alert with an icon
+    </div>
+</div>
+<div id="notify_fail" class="alert alert-danger d-flex align-items-center" style="position: fixed; width: 96%; margin-left: 2%; display: inline-flex; visibility: hidden; " role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill" /></svg>
+    <div id="notify_fail_text">
+        An example danger alert with an icon
+    </div>
 </div>
 
 <script>
@@ -251,6 +259,7 @@
         $("#new_cost_dialog").load("/main/dialogs/new_cost.html");
         $("#settings_dialog").load("/main/dialogs/settings.html");
         $("#new_plan_dialog").load("/main/dialogs/new_plan.html");
+        $("#spend_dialog").load("/main/dialogs/spend.html");
 
         window.setTimeout(HomeDialog.Init, 1000);
 

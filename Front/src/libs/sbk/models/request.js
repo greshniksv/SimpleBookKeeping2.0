@@ -21,6 +21,18 @@
         return request;
     }
 
+    static Put(url, data, onSuccess, onError) {
+        var request = new AjaxRequest();
+        request.url = url;
+        request.method = 'put'
+        request.dataType = "json";
+        request.contentType = "application/json";
+        request.data = JSON.stringify(data);
+        request.onSuccess = onSuccess;
+        request.onError = onError;
+        return request;
+    }
+
     static Get(url, onSuccess, onError) {
         var request = new AjaxRequest();
         request.url = url;
